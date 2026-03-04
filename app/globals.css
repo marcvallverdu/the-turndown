@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-ivory text-charcoal font-sans antialiased;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  @apply text-charcoal transition-colors duration-200;
+}
+
+a:hover {
+  @apply text-gold;
+}
+
+::selection {
+  background: rgba(184, 151, 106, 0.25);
+}
+
+.prose-luxury {
+  @apply prose prose-neutral max-w-none;
+  --tw-prose-body: #1A1A1A;
+  --tw-prose-headings: #1A1A1A;
+  --tw-prose-links: #B8976A;
+  --tw-prose-bold: #1A1A1A;
+  --tw-prose-counters: #8A9A7B;
+  --tw-prose-bullets: #8A9A7B;
+  --tw-prose-quotes: #1A1A1A;
+  --tw-prose-quote-borders: #B8976A;
+  --tw-prose-hr: #E8E4DF;
+}
+
+.prose-luxury h2,
+.prose-luxury h3,
+.prose-luxury h4 {
+  @apply font-serif font-medium;
+}
+
+.prose-luxury blockquote {
+  @apply border-l-2 border-gold text-2xl italic font-serif leading-relaxed text-charcoal;
+}
+
+.section-title {
+  @apply font-serif text-3xl sm:text-4xl tracking-tight;
+}
+
+.gradient-divider {
+  background: linear-gradient(90deg, rgba(184, 151, 106, 0.1), rgba(184, 151, 106, 0.6), rgba(184, 151, 106, 0.1));
+}
