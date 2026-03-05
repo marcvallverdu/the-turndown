@@ -9,6 +9,20 @@ import ReviewCard from '@/components/ReviewCard';
 import { getHotelBySlug, getHotelsByBrand, getHotelsByRegion } from '@/lib/db';
 import { formatPriceRange, jsonParse } from '@/lib/utils';
 
+function Paragraphs({ text }: { text?: string | null }) {
+  if (!text) return null;
+  const paragraphs = text.split('\n\n').filter((p) => p.trim());
+  return (
+    <div className="mt-6 space-y-5">
+      {paragraphs.map((p, i) => (
+        <p key={i} className="text-base leading-[1.8] text-charcoal/80 sm:text-[17px] sm:leading-[1.85]">
+          {p.trim()}
+        </p>
+      ))}
+    </div>
+  );
+}
+
 export const dynamic = 'force-dynamic';
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -109,7 +123,7 @@ export default async function ReviewPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="body-max px-6">
+      <section className="body-max">
         <div className="flex flex-wrap items-center gap-6 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/60">
           <span>{hotel.style}</span>
           <span>{formatPriceRange(hotel.price_range)}</span>
@@ -123,10 +137,10 @@ export default async function ReviewPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="body-max px-6">
+      <section className="body-max">
         <div className="section-rule" />
         <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">The Introduction</p>
-        <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-charcoal/80">{hotel.review_intro}</p>
+        <Paragraphs text={hotel.review_intro} />
       </section>
 
       {gallery[0] && (
@@ -135,20 +149,20 @@ export default async function ReviewPage({ params }: PageProps) {
         </section>
       )}
 
-      <section className="body-max px-6">
+      <section className="body-max">
         <div className="section-rule" />
         <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">The Arrival</p>
-        <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-charcoal/80">{hotel.review_arrival}</p>
+        <Paragraphs text={hotel.review_arrival} />
       </section>
 
-      <section className="body-max px-6">
+      <section className="body-max">
         <p className="pull-quote">{getPullQuote(hotel.review_arrival)}</p>
       </section>
 
-      <section className="body-max px-6">
+      <section className="body-max">
         <div className="section-rule" />
         <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">The Room</p>
-        <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-charcoal/80">{hotel.review_room}</p>
+        <Paragraphs text={hotel.review_room} />
       </section>
 
       {gallery[1] && (
@@ -157,20 +171,20 @@ export default async function ReviewPage({ params }: PageProps) {
         </section>
       )}
 
-      <section className="body-max px-6">
+      <section className="body-max">
         <div className="section-rule" />
         <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">The Service</p>
-        <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-charcoal/80">{hotel.review_service}</p>
+        <Paragraphs text={hotel.review_service} />
       </section>
 
-      <section className="body-max px-6">
+      <section className="body-max">
         <p className="pull-quote">{getPullQuote(hotel.review_service)}</p>
       </section>
 
-      <section className="body-max px-6">
+      <section className="body-max">
         <div className="section-rule" />
         <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">Food & Drink</p>
-        <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-charcoal/80">{hotel.review_food}</p>
+        <Paragraphs text={hotel.review_food} />
       </section>
 
       {gallery[2] && (
@@ -179,13 +193,13 @@ export default async function ReviewPage({ params }: PageProps) {
         </section>
       )}
 
-      <section className="body-max px-6">
+      <section className="body-max">
         <div className="section-rule" />
         <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">The Details</p>
-        <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-charcoal/80">{hotel.review_details}</p>
+        <Paragraphs text={hotel.review_details} />
       </section>
 
-      <section className="body-max px-6">
+      <section className="body-max">
         <p className="pull-quote">{getPullQuote(hotel.review_details)}</p>
       </section>
 
@@ -199,7 +213,7 @@ export default async function ReviewPage({ params }: PageProps) {
         <div>
           <div className="section-rule" />
           <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">The Verdict</p>
-          <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-charcoal/80">{hotel.review_verdict}</p>
+          <Paragraphs text={hotel.review_verdict} />
         </div>
         <div className="grid gap-4 text-[0.7rem] uppercase tracking-[0.35em] text-charcoal/60 sm:grid-cols-2">
           <Link href={hotel.website} className="border-b border-charcoal/70 pb-2 hover:border-gold hover:text-gold">

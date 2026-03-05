@@ -28,7 +28,8 @@ a:hover {
 }
 
 .prose-luxury {
-  @apply prose prose-neutral max-w-none;
+  @apply prose prose-neutral max-w-none prose-p:leading-[1.8] prose-p:mb-5;
+  font-size: 16px;
   --tw-prose-body: #3A3A3A;
   --tw-prose-headings: #1A1A1A;
   --tw-prose-links: #B8976A;
@@ -38,6 +39,13 @@ a:hover {
   --tw-prose-quotes: #1A1A1A;
   --tw-prose-quote-borders: #B8976A;
   --tw-prose-hr: #E8E4DF;
+}
+
+@media (min-width: 640px) {
+  .prose-luxury {
+    font-size: 17px;
+    line-height: 1.85;
+  }
 }
 
 .prose-luxury h2,
@@ -67,9 +75,9 @@ a:hover {
 }
 
 .pull-quote {
-  @apply mx-auto max-w-3xl text-center font-serif text-3xl italic leading-relaxed text-charcoal;
+  @apply mx-auto max-w-3xl text-center font-serif text-xl sm:text-3xl italic leading-relaxed text-charcoal;
 }
 
 .body-max {
-  @apply mx-auto w-full max-w-[680px];
+  @apply mx-auto w-full max-w-[680px] px-5 sm:px-6;
 }
