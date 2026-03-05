@@ -54,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <Script
           src="https://example-analytics.com/script.js"
-          data-website-id="UMAMI-PLACEHOLDER"
+          data-website-id="4ae0043f-c1ff-4b59-87e1-eae401e7ab66"
           strategy="afterInteractive"
         />
       </body>
