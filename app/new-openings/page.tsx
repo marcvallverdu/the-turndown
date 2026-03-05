@@ -3,15 +3,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getArticlesByCategory } from '@/lib/db';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = `force-dynamic`;
 
 export const metadata: Metadata = {
-  title: 'New Openings',
-  description: 'The most anticipated new hotel openings.'
+  title: `New Openings`,
+  description: `The most anticipated new hotel openings.`
 };
 
-export default function NewOpeningsPage() {
-  const articles = getArticlesByCategory('new-openings');
+export default async function NewOpeningsPage() {
+  const articles = await getArticlesByCategory(`new-openings`);
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-24 pt-12">

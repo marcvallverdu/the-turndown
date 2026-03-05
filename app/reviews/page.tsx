@@ -3,11 +3,11 @@ import ReviewCard from '@/components/ReviewCard';
 import FilterBar from '@/components/FilterBar';
 import { getAllBrands, getAllDestinations, getAllHotels } from '@/lib/db';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = `force-dynamic`;
 
 export const metadata: Metadata = {
-  title: 'Reviews',
-  description: 'All hotel reviews from The Turndown, filterable by brand, destination, and price.'
+  title: `Reviews`,
+  description: `All hotel reviews from The Turndown, filterable by brand, destination, and price.`
 };
 
 type PageProps = {
@@ -16,18 +16,17 @@ type PageProps = {
 
 export default async function ReviewsPage({ searchParams }: PageProps) {
   const sp = searchParams ? await searchParams : {};
-  const brands = getAllBrands();
-  const destinations = getAllDestinations();
+  const [brands, destinations] = await Promise.all([getAllBrands(), getAllDestinations()]);
 
   const price = sp?.price;
   const filters = {
     brandSlug: sp?.brand || undefined,
     destinationSlug: sp?.destination || undefined,
-    minPrice: price === 'mid' ? 900 : price === 'high' ? 1600 : undefined,
-    maxPrice: price === 'low' ? 900 : price === 'mid' ? 1600 : undefined
+    minPrice: price === `mid` ? 900 : price === `high` ? 1600 : undefined,
+    maxPrice: price === `low` ? 900 : price === `mid` ? 1600 : undefined
   };
 
-  const hotels = getAllHotels(filters);
+  const hotels = await getAllHotels(filters);
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pb-24 pt-12">
@@ -45,7 +44,7 @@ export default async function ReviewsPage({ searchParams }: PageProps) {
       />
       <section className="grid gap-12 md:grid-cols-2">
         {hotels.map((hotel, index) => (
-          <ReviewCard key={hotel.slug} hotel={hotel} className={index % 2 === 1 ? 'md:mt-16' : ''} />
+          <ReviewCard key={hotel.slug} hotel={hotel} className={index % 2 === 1 ? `md:mt-16` : ``} />
         ))}
       </section>
     </div>

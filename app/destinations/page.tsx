@@ -3,15 +3,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getAllDestinations } from '@/lib/db';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = `force-dynamic`;
 
 export const metadata: Metadata = {
-  title: 'Destinations',
-  description: 'Destination guides and hotel reviews across the world.'
+  title: `Destinations`,
+  description: `Destination guides and hotel reviews across the world.`
 };
 
-export default function DestinationsPage() {
-  const destinations = getAllDestinations();
+export default async function DestinationsPage() {
+  const destinations = await getAllDestinations();
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-24 pt-12">

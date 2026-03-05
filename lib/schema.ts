@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS hotels (
   country_slug TEXT,
   region TEXT,
   region_slug TEXT,
-  latitude REAL,
-  longitude REAL,
+  latitude DOUBLE PRECISION,
+  longitude DOUBLE PRECISION,
   price_range TEXT,
   price_from INTEGER,
   price_to INTEGER,
@@ -33,16 +33,16 @@ CREATE TABLE IF NOT EXISTS hotels (
   verdict_best_for TEXT,
   verdict_skip_if TEXT,
   verdict_standout TEXT,
-  rating_overall REAL,
-  rating_room REAL,
-  rating_service REAL,
-  rating_food REAL,
-  rating_value REAL,
-  rating_location REAL,
+  rating_overall DOUBLE PRECISION,
+  rating_room DOUBLE PRECISION,
+  rating_service DOUBLE PRECISION,
+  rating_food DOUBLE PRECISION,
+  rating_value DOUBLE PRECISION,
+  rating_location DOUBLE PRECISION,
   published INTEGER DEFAULT 0,
   featured INTEGER DEFAULT 0,
-  created_at TEXT DEFAULT (datetime('now')),
-  updated_at TEXT DEFAULT (datetime('now'))
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS brands (
@@ -58,8 +58,8 @@ CREATE TABLE IF NOT EXISTS brands (
   best_property TEXT,
   website TEXT,
   published INTEGER DEFAULT 0,
-  created_at TEXT DEFAULT (datetime('now')),
-  updated_at TEXT DEFAULT (datetime('now'))
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS destinations (
@@ -73,8 +73,8 @@ CREATE TABLE IF NOT EXISTS destinations (
   best_time TEXT,
   content_md TEXT,
   published INTEGER DEFAULT 0,
-  created_at TEXT DEFAULT (datetime('now')),
-  updated_at TEXT DEFAULT (datetime('now'))
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS articles (
@@ -88,15 +88,15 @@ CREATE TABLE IF NOT EXISTS articles (
   hotels_mentioned TEXT,
   published INTEGER DEFAULT 0,
   featured INTEGER DEFAULT 0,
-  created_at TEXT DEFAULT (datetime('now')),
-  updated_at TEXT DEFAULT (datetime('now'))
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS newsletter_subscribers (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id SERIAL PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
   confirmed INTEGER DEFAULT 0,
-  created_at TEXT DEFAULT (datetime('now'))
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_hotels_brand ON hotels(brand_slug);

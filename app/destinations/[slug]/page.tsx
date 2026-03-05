@@ -5,14 +5,14 @@ import MarkdownContent from '@/components/MarkdownContent';
 import ReviewCard from '@/components/ReviewCard';
 import { getDestinationBySlug, getHotelsForDestination } from '@/lib/db';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = `force-dynamic`;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const destination = getDestinationBySlug(slug);
-  if (!destination) return { title: 'Destination' };
+  const destination = await getDestinationBySlug(slug);
+  if (!destination) return { title: `Destination` };
   return {
     title: destination.name,
     description: destination.intro_md,
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function DestinationPage({ params }: PageProps) {
   const { slug } = await params;
-  const destination = getDestinationBySlug(slug);
+  const destination = await getDestinationBySlug(slug);
   if (!destination) {
     return (
       <div className="mx-auto max-w-6xl px-6 py-24">
@@ -38,7 +38,7 @@ export default async function DestinationPage({ params }: PageProps) {
     );
   }
 
-  const hotels = getHotelsForDestination(destination);
+  const hotels = await getHotelsForDestination(destination);
 
   return (
     <div className="flex w-full flex-col gap-16 pb-24">
@@ -73,7 +73,7 @@ export default async function DestinationPage({ params }: PageProps) {
         </div>
         <div className="grid gap-10 md:grid-cols-2">
           {hotels.map((hotel, index) => (
-            <ReviewCard key={hotel.slug} hotel={hotel} className={index % 2 === 1 ? 'md:mt-16' : ''} />
+            <ReviewCard key={hotel.slug} hotel={hotel} className={index % 2 === 1 ? `md:mt-16` : ``} />
           ))}
         </div>
       </section>

@@ -4,14 +4,14 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import MarkdownContent from '@/components/MarkdownContent';
 import { getArticleBySlug } from '@/lib/db';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = `force-dynamic`;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
-  if (!article) return { title: 'New opening' };
+  const article = await getArticleBySlug(slug);
+  if (!article) return { title: `New opening` };
   return {
     title: article.title,
     description: article.subtitle,
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function NewOpeningPage({ params }: PageProps) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
   if (!article) {
     return (
       <div className="mx-auto max-w-6xl px-6 py-24">

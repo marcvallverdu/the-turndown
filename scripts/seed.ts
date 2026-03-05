@@ -1,19 +1,8 @@
-import Database from 'better-sqlite3';
-import fs from 'fs';
-import path from 'path';
+import { Pool } from 'pg';
 import { randomUUID } from 'crypto';
 import { schema } from '../lib/schema';
 
-const dataDir = path.join(process.cwd(), 'data');
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
-
-const dbPath = path.join(dataDir, 'theturndown.db');
-const db = new Database(dbPath);
-
-db.pragma('foreign_keys = ON');
-db.exec(schema);
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 const section = (paragraphs: string[]) => paragraphs.join(`\n\n`);
 
@@ -816,91 +805,217 @@ const articles = [
   }
 ];
 
-const insertHotel = db.prepare(`
-  INSERT INTO hotels (
-    id, slug, name, brand, brand_slug, location, country, country_slug, region, region_slug,
-    latitude, longitude, price_range, price_from, price_to, currency, style, best_for, hero_image,
-    images, website, booking_url, tagline, review_intro, review_arrival, review_room, review_service,
-    review_food, review_details, review_verdict, verdict_best_for, verdict_skip_if, verdict_standout,
-    rating_overall, rating_room, rating_service, rating_food, rating_value, rating_location, published, featured
-  ) VALUES (
-    @id, @slug, @name, @brand, @brand_slug, @location, @country, @country_slug, @region, @region_slug,
-    @latitude, @longitude, @price_range, @price_from, @price_to, @currency, @style, @best_for, @hero_image,
-    @images, @website, @booking_url, @tagline, @review_intro, @review_arrival, @review_room, @review_service,
-    @review_food, @review_details, @review_verdict, @verdict_best_for, @verdict_skip_if, @verdict_standout,
-    @rating_overall, @rating_room, @rating_service, @rating_food, @rating_value, @rating_location, @published, @featured
-  )
-`);
+const hotelColumns = [
+  `id`,
+  `slug`,
+  `name`,
+  `brand`,
+  `brand_slug`,
+  `location`,
+  `country`,
+  `country_slug`,
+  `region`,
+  `region_slug`,
+  `latitude`,
+  `longitude`,
+  `price_range`,
+  `price_from`,
+  `price_to`,
+  `currency`,
+  `style`,
+  `best_for`,
+  `hero_image`,
+  `images`,
+  `website`,
+  `booking_url`,
+  `tagline`,
+  `review_intro`,
+  `review_arrival`,
+  `review_room`,
+  `review_service`,
+  `review_food`,
+  `review_details`,
+  `review_verdict`,
+  `verdict_best_for`,
+  `verdict_skip_if`,
+  `verdict_standout`,
+  `rating_overall`,
+  `rating_room`,
+  `rating_service`,
+  `rating_food`,
+  `rating_value`,
+  `rating_location`,
+  `published`,
+  `featured`
+];
 
-const insertBrand = db.prepare(`
-  INSERT INTO brands (
-    id, slug, name, tagline, hero_image, content_md, hotel_count, founded_year, parent_company,
-    best_property, website, published
-  ) VALUES (
-    @id, @slug, @name, @tagline, @hero_image, @content_md, @hotel_count, @founded_year, @parent_company,
-    @best_property, @website, @published
-  )
-`);
+const brandColumns = [
+  `id`,
+  `slug`,
+  `name`,
+  `tagline`,
+  `hero_image`,
+  `content_md`,
+  `hotel_count`,
+  `founded_year`,
+  `parent_company`,
+  `best_property`,
+  `website`,
+  `published`
+];
 
-const insertDestination = db.prepare(`
-  INSERT INTO destinations (
-    id, slug, name, country, region, hero_image, intro_md, best_time, content_md, published
-  ) VALUES (
-    @id, @slug, @name, @country, @region, @hero_image, @intro_md, @best_time, @content_md, @published
-  )
-`);
+const destinationColumns = [
+  `id`,
+  `slug`,
+  `name`,
+  `country`,
+  `region`,
+  `hero_image`,
+  `intro_md`,
+  `best_time`,
+  `content_md`,
+  `published`
+];
 
-const insertArticle = db.prepare(`
-  INSERT INTO articles (
-    id, slug, title, subtitle, category, hero_image, content_md, hotels_mentioned, published, featured
-  ) VALUES (
-    @id, @slug, @title, @subtitle, @category, @hero_image, @content_md, @hotels_mentioned, @published, @featured
-  )
-`);
+const articleColumns = [
+  `id`,
+  `slug`,
+  `title`,
+  `subtitle`,
+  `category`,
+  `hero_image`,
+  `content_md`,
+  `hotels_mentioned`,
+  `published`,
+  `featured`
+];
 
-db.exec(`DELETE FROM hotels`);
-db.exec(`DELETE FROM brands`);
-db.exec(`DELETE FROM destinations`);
-db.exec(`DELETE FROM articles`);
-db.exec(`DELETE FROM newsletter_subscribers`);
+const insertHotelQuery = `INSERT INTO hotels (${hotelColumns.join(`, `)}) VALUES (${hotelColumns
+  .map((_, index) => `$${index + 1}`)
+  .join(`, `)})`;
 
-const insertHotels = db.transaction((entries: typeof hotels) => {
-  for (const hotel of entries) {
-    insertHotel.run({
-      id: randomUUID(),
-      ...hotel,
-      best_for: JSON.stringify(hotel.best_for),
-      images: JSON.stringify(hotel.images),
-      published: 1
-    });
+const insertBrandQuery = `INSERT INTO brands (${brandColumns.join(`, `)}) VALUES (${brandColumns
+  .map((_, index) => `$${index + 1}`)
+  .join(`, `)})`;
+
+const insertDestinationQuery = `INSERT INTO destinations (${destinationColumns.join(`, `)}) VALUES (${destinationColumns
+  .map((_, index) => `$${index + 1}`)
+  .join(`, `)})`;
+
+const insertArticleQuery = `INSERT INTO articles (${articleColumns.join(`, `)}) VALUES (${articleColumns
+  .map((_, index) => `$${index + 1}`)
+  .join(`, `)})`;
+
+const seed = async () => {
+  await pool.query(schema);
+  await pool.query(`DELETE FROM hotels`);
+  await pool.query(`DELETE FROM brands`);
+  await pool.query(`DELETE FROM destinations`);
+  await pool.query(`DELETE FROM articles`);
+  await pool.query(`DELETE FROM newsletter_subscribers`);
+
+  for (const hotel of hotels) {
+    await pool.query(insertHotelQuery, [
+      randomUUID(),
+      hotel.slug,
+      hotel.name,
+      hotel.brand,
+      hotel.brand_slug,
+      hotel.location,
+      hotel.country,
+      hotel.country_slug,
+      hotel.region,
+      hotel.region_slug,
+      hotel.latitude,
+      hotel.longitude,
+      hotel.price_range,
+      hotel.price_from,
+      hotel.price_to,
+      hotel.currency,
+      hotel.style,
+      JSON.stringify(hotel.best_for),
+      hotel.hero_image,
+      JSON.stringify(hotel.images),
+      hotel.website,
+      hotel.booking_url,
+      hotel.tagline,
+      hotel.review_intro,
+      hotel.review_arrival,
+      hotel.review_room,
+      hotel.review_service,
+      hotel.review_food,
+      hotel.review_details,
+      hotel.review_verdict,
+      hotel.verdict_best_for,
+      hotel.verdict_skip_if,
+      hotel.verdict_standout,
+      hotel.rating_overall,
+      hotel.rating_room,
+      hotel.rating_service,
+      hotel.rating_food,
+      hotel.rating_value,
+      hotel.rating_location,
+      1,
+      hotel.featured ?? 0
+    ]);
   }
-});
 
-const insertBrands = db.transaction((entries: typeof brands) => {
-  for (const brand of entries) {
-    insertBrand.run({ id: randomUUID(), ...brand });
+  for (const brand of brands) {
+    await pool.query(insertBrandQuery, [
+      randomUUID(),
+      brand.slug,
+      brand.name,
+      brand.tagline,
+      brand.hero_image,
+      brand.content_md,
+      brand.hotel_count,
+      brand.founded_year,
+      brand.parent_company,
+      brand.best_property,
+      brand.website,
+      brand.published
+    ]);
   }
-});
 
-const insertDestinations = db.transaction((entries: typeof destinations) => {
-  for (const destination of entries) {
-    insertDestination.run({ id: randomUUID(), ...destination });
+  for (const destination of destinations) {
+    await pool.query(insertDestinationQuery, [
+      randomUUID(),
+      destination.slug,
+      destination.name,
+      destination.country,
+      destination.region,
+      destination.hero_image,
+      destination.intro_md,
+      destination.best_time,
+      destination.content_md,
+      destination.published
+    ]);
   }
-});
 
-const insertArticles = db.transaction((entries: typeof articles) => {
-  for (const article of entries) {
-    insertArticle.run({
-      id: randomUUID(),
-      ...article,
-      hotels_mentioned: JSON.stringify(article.hotels_mentioned)
-    });
+  for (const article of articles) {
+    await pool.query(insertArticleQuery, [
+      randomUUID(),
+      article.slug,
+      article.title,
+      article.subtitle,
+      article.category,
+      article.hero_image,
+      article.content_md,
+      JSON.stringify(article.hotels_mentioned),
+      article.published,
+      article.featured
+    ]);
   }
-});
+};
 
-insertHotels(hotels);
-insertBrands(brands);
-insertDestinations(destinations);
-insertArticles(articles);
-
-console.log(`Seed complete.`);
+seed()
+  .then(() => {
+    console.log(`Seed complete.`);
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  })
+  .finally(async () => {
+    await pool.end();
+  });

@@ -3,15 +3,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getArticlesByCategory } from '@/lib/db';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = `force-dynamic`;
 
 export const metadata: Metadata = {
-  title: 'The Details',
-  description: 'Long-form essays on luxury hotel culture, design, and hospitality.'
+  title: `The Details`,
+  description: `Long-form essays on luxury hotel culture, design, and hospitality.`
 };
 
-export default function TheDetailsPage() {
-  const articles = getArticlesByCategory('the-details');
+export default async function TheDetailsPage() {
+  const articles = await getArticlesByCategory(`the-details`);
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-24 pt-12">

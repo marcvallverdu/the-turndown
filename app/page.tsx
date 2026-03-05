@@ -4,17 +4,20 @@ import ReviewCard from '@/components/ReviewCard';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import { getAllBrands, getFeaturedHotels, getLatestArticleByCategory, getLatestHotels } from '@/lib/db';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = `force-dynamic`;
 
-export default function HomePage() {
-  const [featured] = getFeaturedHotels(1);
-  const latestReviews = getLatestHotels(4);
-  const latestEssay = getLatestArticleByCategory('the-details');
-  const brands = getAllBrands();
+export default async function HomePage() {
+  const [featuredHotels, latestReviews, latestEssay, brands] = await Promise.all([
+    getFeaturedHotels(1),
+    getLatestHotels(4),
+    getLatestArticleByCategory(`the-details`),
+    getAllBrands()
+  ]);
+  const [featured] = featuredHotels;
   const essayQuote =
     latestEssay?.content_md
-      ?.split('\n')
-      .find((line: string) => line.trim() && !line.trim().startsWith('#') && !line.trim().startsWith('##')) || '';
+      ?.split(`\n`)
+      .find((line: string) => line.trim() && !line.trim().startsWith(`#`) && !line.trim().startsWith(`##`)) || ``;
 
   return (
     <div className="flex w-full flex-col gap-16 pb-24">

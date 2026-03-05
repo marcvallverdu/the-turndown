@@ -6,14 +6,14 @@ import MarkdownContent from '@/components/MarkdownContent';
 import ReviewCard from '@/components/ReviewCard';
 import { getBrandBySlug, getHotelsByBrand } from '@/lib/db';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = `force-dynamic`;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const brand = getBrandBySlug(slug);
-  if (!brand) return { title: 'Brand' };
+  const brand = await getBrandBySlug(slug);
+  if (!brand) return { title: `Brand` };
   return {
     title: brand.name,
     description: brand.tagline,
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function BrandPage({ params }: PageProps) {
   const { slug } = await params;
-  const brand = getBrandBySlug(slug);
+  const brand = await getBrandBySlug(slug);
   if (!brand) {
     return (
       <div className="mx-auto max-w-6xl px-6 py-24">
@@ -39,7 +39,7 @@ export default async function BrandPage({ params }: PageProps) {
     );
   }
 
-  const hotels = getHotelsByBrand(brand.slug);
+  const hotels = await getHotelsByBrand(brand.slug);
 
   return (
     <div className="flex w-full flex-col gap-16 pb-24">
@@ -98,7 +98,7 @@ export default async function BrandPage({ params }: PageProps) {
         </div>
         <div className="grid gap-10 md:grid-cols-2">
           {hotels.map((hotel, index) => (
-            <ReviewCard key={hotel.slug} hotel={hotel} className={index % 2 === 1 ? 'md:mt-16' : ''} />
+            <ReviewCard key={hotel.slug} hotel={hotel} className={index % 2 === 1 ? `md:mt-16` : ``} />
           ))}
         </div>
       </section>

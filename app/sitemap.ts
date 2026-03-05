@@ -1,18 +1,17 @@
 import type { MetadataRoute } from 'next';
-import { getAllBrands, getAllDestinations, getAllHotels } from '@/lib/db';
-import db from '@/lib/db';
+import { getAllBrands, getAllDestinations, getAllHotels, getArticlesForSitemap } from '@/lib/db';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = `force-dynamic`;
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const hotels = getAllHotels();
-  const brands = getAllBrands();
-  const destinations = getAllDestinations();
-  const articles = db
-    .prepare('SELECT slug, category FROM articles WHERE published = 1')
-    .all() as { slug: string; category: string }[];
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [hotels, brands, destinations, articles] = await Promise.all([
+    getAllHotels(),
+    getAllBrands(),
+    getAllDestinations(),
+    getArticlesForSitemap()
+  ]);
 
-  const baseUrl = 'https://theturndown.co';
+  const baseUrl = `https://theturndown.co`;
 
   return [
     { url: baseUrl, lastModified: new Date() },

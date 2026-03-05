@@ -11,7 +11,7 @@ import { formatPriceRange, jsonParse } from '@/lib/utils';
 
 function Paragraphs({ text }: { text?: string | null }) {
   if (!text) return null;
-  const paragraphs = text.split('\n\n').filter((p) => p.trim());
+  const paragraphs = text.split(`\n\n`).filter((p) => p.trim());
   return (
     <div className="mt-6 space-y-5">
       {paragraphs.map((p, i) => (
@@ -23,14 +23,14 @@ function Paragraphs({ text }: { text?: string | null }) {
   );
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = `force-dynamic`;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const hotel = getHotelBySlug(slug);
-  if (!hotel) return { title: 'Review' };
+  const hotel = await getHotelBySlug(slug);
+  if (!hotel) return { title: `Review` };
   return {
     title: hotel.name,
     description: hotel.tagline,
@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ReviewPage({ params }: PageProps) {
   const { slug } = await params;
-  const hotel = getHotelBySlug(slug);
+  const hotel = await getHotelBySlug(slug);
   if (!hotel) {
     return (
       <div className="mx-auto max-w-6xl px-6 py-24">
@@ -57,43 +57,47 @@ export default async function ReviewPage({ params }: PageProps) {
   }
 
   const bestFor = jsonParse<string[]>(hotel.best_for, []);
-  const relatedByBrand = getHotelsByBrand(hotel.brand_slug).filter((item) => item.slug !== hotel.slug).slice(0, 2);
-  const relatedByRegion = getHotelsByRegion(hotel.region_slug, 2).filter((item) => item.slug !== hotel.slug);
+  const [relatedByBrand, relatedByRegion] = await Promise.all([
+    getHotelsByBrand(hotel.brand_slug),
+    getHotelsByRegion(hotel.region_slug, 2)
+  ]);
+  const filteredByBrand = relatedByBrand.filter((item) => item.slug !== hotel.slug).slice(0, 2);
+  const filteredByRegion = relatedByRegion.filter((item) => item.slug !== hotel.slug);
   const gallery = jsonParse<string[]>(hotel.images, []);
   const getPullQuote = (text: string) => {
-    const sentence = text.split('. ').find((line) => line.trim().length > 0);
-    if (!sentence) return '';
-    return sentence.endsWith('.') ? sentence : `${sentence}.`;
+    const sentence = text.split(`. `).find((line) => line.trim().length > 0);
+    if (!sentence) return ``;
+    return sentence.endsWith(`.`) ? sentence : `${sentence}.`;
   };
 
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Hotel',
+    '@context': `https://schema.org`,
+    '@type': `Hotel`,
     name: hotel.name,
     description: hotel.tagline,
     url: `https://theturndown.co/reviews/${hotel.slug}`,
     image: hotel.hero_image,
     address: {
-      '@type': 'PostalAddress',
+      '@type': `PostalAddress`,
       addressLocality: hotel.location,
       addressCountry: hotel.country
     },
     aggregateRating: {
-      '@type': 'AggregateRating',
+      '@type': `AggregateRating`,
       ratingValue: hotel.rating_overall,
       bestRating: 10,
       worstRating: 0,
       ratingCount: 1
     },
     review: {
-      '@type': 'Review',
+      '@type': `Review`,
       reviewRating: {
-        '@type': 'Rating',
+        '@type': `Rating`,
         ratingValue: hotel.rating_overall,
         bestRating: 10
       },
       author: {
-        '@type': 'Organization', name: 'The Turndown'
+        '@type': `Organization`, name: `The Turndown`
       },
       reviewBody: hotel.review_verdict
     }
@@ -225,20 +229,20 @@ export default async function ReviewPage({ params }: PageProps) {
         </div>
       </section>
 
-      {(relatedByBrand.length > 0 || relatedByRegion.length > 0) && (
+      {(filteredByBrand.length > 0 || filteredByRegion.length > 0) && (
         <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6">
           <div>
             <p className="kicker">More like this</p>
             <h2 className="section-title mt-4 text-4xl sm:text-5xl">More from {hotel.brand}</h2>
           </div>
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-            {relatedByBrand[0] && <ReviewCard hotel={relatedByBrand[0]} variant="feature" />}
+            {filteredByBrand[0] && <ReviewCard hotel={filteredByBrand[0]} variant="feature" />}
             <div className="flex flex-col gap-10 lg:pt-12">
-              {relatedByBrand.slice(1).map((item) => (
+              {filteredByBrand.slice(1).map((item) => (
                 <ReviewCard key={item.slug} hotel={item} />
               ))}
-              {relatedByBrand.length < 2 &&
-                relatedByRegion.slice(0, 2 - relatedByBrand.length).map((item) => (
+              {filteredByBrand.length < 2 &&
+                filteredByRegion.slice(0, 2 - filteredByBrand.length).map((item) => (
                   <ReviewCard key={item.slug} hotel={item} />
                 ))}
             </div>

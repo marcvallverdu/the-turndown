@@ -1,20 +1,18 @@
-import Database from 'better-sqlite3';
-import fs from 'fs';
-import path from 'path';
+import { Pool } from 'pg';
 import { schema } from '@/lib/schema';
 
-const dataDir = path.join(process.cwd(), 'data');
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL
+});
 
-const dbPath = path.join(dataDir, 'theturndown.db');
-const db = new Database(dbPath);
+let schemaReady: Promise<unknown> | null = null;
 
-db.pragma('foreign_keys = ON');
-db.exec(schema);
-
-export default db;
+const ensureSchema = async () => {
+  if (!schemaReady) {
+    schemaReady = pool.query(schema);
+  }
+  await schemaReady;
+};
 
 export type HotelFilters = {
   brandSlug?: string;
@@ -23,127 +21,173 @@ export type HotelFilters = {
   maxPrice?: number;
 };
 
-function destinationFilterClause(destinationSlug?: string) {
-  if (!destinationSlug) return { clause: '', params: [] as any[] };
-  const destination = db
-    .prepare('SELECT * FROM destinations WHERE slug = ? AND published = 1')
-    .get(destinationSlug) as { name: string; country?: string } | undefined;
-  if (!destination) return { clause: '', params: [] as any[] };
-
-  const name = destination.name;
-  const country = destination.country;
-  if (['Tokyo', 'Paris', 'Bora Bora'].includes(name)) {
-    return { clause: ' AND location LIKE ?', params: [`%${name}%`] };
-  }
-
-  return {
-    clause: ' AND (country = ? OR country_slug = ?)',
-    params: [name, (country || name).toLowerCase().replace(/\s+/g, '-')]
-  };
+async function fetchDestinationBySlug(slug: string) {
+  await ensureSchema();
+  const result = await pool.query(`SELECT * FROM destinations WHERE slug = $1 AND published = 1`, [slug]);
+  return result.rows[0] as { name: string; country?: string } | undefined;
 }
 
-export function getHotelBySlug(slug: string) {
-  return db
-    .prepare('SELECT * FROM hotels WHERE slug = ? AND published = 1')
-    .get(slug) as any | undefined;
+export async function getHotelBySlug(slug: string) {
+  await ensureSchema();
+  const result = await pool.query(`SELECT * FROM hotels WHERE slug = $1 AND published = 1`, [slug]);
+  return result.rows[0] as any | undefined;
 }
 
-export function getAllHotels(filters?: HotelFilters) {
-  let query = 'SELECT * FROM hotels WHERE published = 1';
+export async function getAllHotels(filters?: HotelFilters) {
+  await ensureSchema();
+  let query = `SELECT * FROM hotels WHERE published = 1`;
   const params: any[] = [];
 
   if (filters?.brandSlug) {
-    query += ' AND brand_slug = ?';
     params.push(filters.brandSlug);
+    query += ` AND brand_slug = $${params.length}`;
   }
 
-  const destinationClause = destinationFilterClause(filters?.destinationSlug);
-  query += destinationClause.clause;
-  params.push(...destinationClause.params);
+  if (filters?.destinationSlug) {
+    const destination = await fetchDestinationBySlug(filters.destinationSlug);
+    if (destination) {
+      if ([`Tokyo`, `Paris`, `Bora Bora`].includes(destination.name)) {
+        params.push(`%${destination.name}%`);
+        query += ` AND location LIKE $${params.length}`;
+      } else {
+        const country = destination.country || destination.name;
+        const countrySlug = country.toLowerCase().replace(/\s+/g, `-`);
+        params.push(destination.name, countrySlug);
+        query += ` AND (country = $${params.length - 1} OR country_slug = $${params.length})`;
+      }
+    }
+  }
 
   if (filters?.minPrice) {
-    query += ' AND price_to >= ?';
     params.push(filters.minPrice);
+    query += ` AND price_to >= $${params.length}`;
   }
 
   if (filters?.maxPrice) {
-    query += ' AND price_from <= ?';
     params.push(filters.maxPrice);
+    query += ` AND price_from <= $${params.length}`;
   }
 
-  query += ' ORDER BY featured DESC, created_at DESC';
-  return db.prepare(query).all(...params) as any[];
+  query += ` ORDER BY featured DESC, created_at DESC`;
+  const result = await pool.query(query, params);
+  return result.rows as any[];
 }
 
-export function getLatestHotels(limit = 4) {
-  return db
-    .prepare('SELECT * FROM hotels WHERE published = 1 ORDER BY created_at DESC LIMIT ?')
-    .all(limit) as any[];
+export async function getLatestHotels(limit = 4) {
+  await ensureSchema();
+  const result = await pool.query(
+    `SELECT * FROM hotels WHERE published = 1 ORDER BY created_at DESC LIMIT $1`,
+    [limit]
+  );
+  return result.rows as any[];
 }
 
-export function getFeaturedHotels(limit = 1) {
-  return db
-    .prepare('SELECT * FROM hotels WHERE published = 1 AND featured = 1 ORDER BY created_at DESC LIMIT ?')
-    .all(limit) as any[];
+export async function getFeaturedHotels(limit = 1) {
+  await ensureSchema();
+  const result = await pool.query(
+    `SELECT * FROM hotels WHERE published = 1 AND featured = 1 ORDER BY created_at DESC LIMIT $1`,
+    [limit]
+  );
+  return result.rows as any[];
 }
 
-export function getHotelsByBrand(brandSlug: string) {
-  return db
-    .prepare('SELECT * FROM hotels WHERE brand_slug = ? AND published = 1 ORDER BY created_at DESC')
-    .all(brandSlug) as any[];
+export async function getHotelsByBrand(brandSlug: string) {
+  await ensureSchema();
+  const result = await pool.query(
+    `SELECT * FROM hotels WHERE brand_slug = $1 AND published = 1 ORDER BY created_at DESC`,
+    [brandSlug]
+  );
+  return result.rows as any[];
 }
 
-export function getHotelsByRegion(regionSlug: string, limit = 3) {
-  return db
-    .prepare('SELECT * FROM hotels WHERE region_slug = ? AND published = 1 ORDER BY created_at DESC LIMIT ?')
-    .all(regionSlug, limit) as any[];
+export async function getHotelsByRegion(regionSlug: string, limit = 3) {
+  await ensureSchema();
+  const result = await pool.query(
+    `SELECT * FROM hotels WHERE region_slug = $1 AND published = 1 ORDER BY created_at DESC LIMIT $2`,
+    [regionSlug, limit]
+  );
+  return result.rows as any[];
 }
 
-export function getAllBrands() {
-  return db.prepare('SELECT * FROM brands WHERE published = 1 ORDER BY name').all() as any[];
+export async function getAllBrands() {
+  await ensureSchema();
+  const result = await pool.query(`SELECT * FROM brands WHERE published = 1 ORDER BY name`);
+  return result.rows as any[];
 }
 
-export function getBrandBySlug(slug: string) {
-  return db.prepare('SELECT * FROM brands WHERE slug = ? AND published = 1').get(slug) as any | undefined;
+export async function getBrandBySlug(slug: string) {
+  await ensureSchema();
+  const result = await pool.query(`SELECT * FROM brands WHERE slug = $1 AND published = 1`, [slug]);
+  return result.rows[0] as any | undefined;
 }
 
-export function getAllDestinations() {
-  return db.prepare('SELECT * FROM destinations WHERE published = 1 ORDER BY name').all() as any[];
+export async function getAllDestinations() {
+  await ensureSchema();
+  const result = await pool.query(`SELECT * FROM destinations WHERE published = 1 ORDER BY name`);
+  return result.rows as any[];
 }
 
-export function getDestinationBySlug(slug: string) {
-  return db
-    .prepare('SELECT * FROM destinations WHERE slug = ? AND published = 1')
-    .get(slug) as any | undefined;
+export async function getDestinationBySlug(slug: string) {
+  await ensureSchema();
+  const result = await pool.query(`SELECT * FROM destinations WHERE slug = $1 AND published = 1`, [slug]);
+  return result.rows[0] as any | undefined;
 }
 
-export function getHotelsForDestination(destination: { name: string; country?: string; slug: string }) {
-  if (['Tokyo', 'Paris', 'Bora Bora'].includes(destination.name)) {
-    return db
-      .prepare('SELECT * FROM hotels WHERE location LIKE ? AND published = 1 ORDER BY created_at DESC')
-      .all(`%${destination.name}%`) as any[];
+export async function getHotelsForDestination(destination: { name: string; country?: string; slug: string }) {
+  await ensureSchema();
+  if ([`Tokyo`, `Paris`, `Bora Bora`].includes(destination.name)) {
+    const result = await pool.query(
+      `SELECT * FROM hotels WHERE location LIKE $1 AND published = 1 ORDER BY created_at DESC`,
+      [`%${destination.name}%`]
+    );
+    return result.rows as any[];
   }
 
   const country = destination.country || destination.name;
-  return db
-    .prepare('SELECT * FROM hotels WHERE country = ? AND published = 1 ORDER BY created_at DESC')
-    .all(country) as any[];
+  const result = await pool.query(
+    `SELECT * FROM hotels WHERE country = $1 AND published = 1 ORDER BY created_at DESC`,
+    [country]
+  );
+  return result.rows as any[];
 }
 
-export function getArticlesByCategory(category: string) {
-  return db
-    .prepare('SELECT * FROM articles WHERE category = ? AND published = 1 ORDER BY created_at DESC')
-    .all(category) as any[];
+export async function getArticlesByCategory(category: string) {
+  await ensureSchema();
+  const result = await pool.query(
+    `SELECT * FROM articles WHERE category = $1 AND published = 1 ORDER BY created_at DESC`,
+    [category]
+  );
+  return result.rows as any[];
 }
 
-export function getArticleBySlug(slug: string) {
-  return db
-    .prepare('SELECT * FROM articles WHERE slug = ? AND published = 1')
-    .get(slug) as any | undefined;
+export async function getArticleBySlug(slug: string) {
+  await ensureSchema();
+  const result = await pool.query(`SELECT * FROM articles WHERE slug = $1 AND published = 1`, [slug]);
+  return result.rows[0] as any | undefined;
 }
 
-export function getLatestArticleByCategory(category: string) {
-  return db
-    .prepare('SELECT * FROM articles WHERE category = ? AND published = 1 ORDER BY created_at DESC LIMIT 1')
-    .get(category) as any | undefined;
+export async function getLatestArticleByCategory(category: string) {
+  await ensureSchema();
+  const result = await pool.query(
+    `SELECT * FROM articles WHERE category = $1 AND published = 1 ORDER BY created_at DESC LIMIT 1`,
+    [category]
+  );
+  return result.rows[0] as any | undefined;
 }
+
+export async function getArticlesForSitemap() {
+  await ensureSchema();
+  const result = await pool.query(`SELECT slug, category FROM articles WHERE published = 1`);
+  return result.rows as { slug: string; category: string }[];
+}
+
+export async function insertNewsletterSubscriber(email: string) {
+  await ensureSchema();
+  await pool.query(
+    `INSERT INTO newsletter_subscribers (email, confirmed) VALUES ($1, 1)
+     ON CONFLICT (email) DO NOTHING`,
+    [email]
+  );
+}
+
+export default pool;
