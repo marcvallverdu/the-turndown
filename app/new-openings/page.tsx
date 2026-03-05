@@ -14,34 +14,33 @@ export default function NewOpeningsPage() {
   const articles = getArticlesByCategory('new-openings');
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pb-20 pt-12">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-24 pt-12">
       <section>
-        <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">New openings</p>
-        <h1 className="mt-4 font-serif text-5xl">The arrivals worth a flight.</h1>
+        <p className="kicker">New openings</p>
+        <h1 className="mt-4 font-serif text-5xl sm:text-6xl">The arrivals worth a flight.</h1>
       </section>
-      <section className="grid gap-6 md:grid-cols-2">
+      <section className="flex flex-col gap-12">
         {articles.map((article) => (
-          <Link
-            key={article.slug}
-            href={`/new-openings/${article.slug}`}
-            className="group overflow-hidden rounded-3xl border border-mist bg-white/70 shadow-soft-card"
-          >
-            <div className="relative h-52">
-              <Image
-                src={article.hero_image}
-                alt={article.title}
-                fill
-                className="object-cover transition duration-700 group-hover:scale-105"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-              <div className="absolute bottom-4 left-4 text-white">
-                <p className="text-xs uppercase tracking-[0.3em] text-white/70">New opening</p>
-                <h2 className="mt-2 font-serif text-3xl">{article.title}</h2>
+          <Link key={article.slug} href={`/new-openings/${article.slug}`} className="group">
+            <div className="grid gap-6 border-b border-mist pb-10 md:grid-cols-[1.1fr_0.9fr]">
+              <div className="relative h-64 overflow-hidden">
+                <Image
+                  src={article.hero_image}
+                  alt={article.title}
+                  fill
+                  className="object-cover transition duration-700 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                <div className="absolute bottom-4 left-4 text-white">
+                  <p className="text-[0.65rem] uppercase tracking-[0.35em] text-white/70">New opening</p>
+                  <h2 className="mt-2 font-serif text-3xl">{article.title}</h2>
+                </div>
               </div>
-            </div>
-            <div className="p-6">
-              <p className="text-sm leading-relaxed text-charcoal/70">{article.subtitle}</p>
+              <div>
+                <p className="text-sm leading-relaxed text-charcoal/70">{article.subtitle}</p>
+                <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">Read briefing</p>
+              </div>
             </div>
           </Link>
         ))}

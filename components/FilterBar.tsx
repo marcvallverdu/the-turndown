@@ -12,14 +12,14 @@ export default function FilterBar({
   return (
     <form
       method="GET"
-      className="grid gap-4 rounded-3xl border border-mist bg-white/70 p-6 text-sm shadow-soft-card md:grid-cols-[1fr_1fr_1fr_auto]"
+      className="grid gap-6 border-y border-mist py-6 text-sm md:grid-cols-[1fr_1fr_1fr_auto]"
     >
-      <label className="flex flex-col gap-2 text-xs uppercase tracking-[0.3em] text-charcoal/60">
+      <label className="flex flex-col gap-2 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/60">
         Brand
         <select
           name="brand"
           defaultValue={current.brand || ''}
-          className="rounded-full border border-mist bg-white px-4 py-3 text-sm"
+          className="border-b border-mist bg-transparent px-2 py-2 text-sm"
         >
           <option value="">All</option>
           {brands.map((brand) => (
@@ -29,12 +29,12 @@ export default function FilterBar({
           ))}
         </select>
       </label>
-      <label className="flex flex-col gap-2 text-xs uppercase tracking-[0.3em] text-charcoal/60">
+      <label className="flex flex-col gap-2 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/60">
         Destination
         <select
           name="destination"
           defaultValue={current.destination || ''}
-          className="rounded-full border border-mist bg-white px-4 py-3 text-sm"
+          className="border-b border-mist bg-transparent px-2 py-2 text-sm"
         >
           <option value="">Everywhere</option>
           {destinations.map((destination) => (
@@ -44,12 +44,12 @@ export default function FilterBar({
           ))}
         </select>
       </label>
-      <label className="flex flex-col gap-2 text-xs uppercase tracking-[0.3em] text-charcoal/60">
+      <label className="flex flex-col gap-2 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/60">
         Price
         <select
           name="price"
           defaultValue={current.price || ''}
-          className="rounded-full border border-mist bg-white px-4 py-3 text-sm"
+          className="border-b border-mist bg-transparent px-2 py-2 text-sm"
         >
           <option value="">Any</option>
           <option value="low">Under $900</option>
@@ -60,7 +60,7 @@ export default function FilterBar({
       <button
         type="submit"
         className={cn(
-          'h-12 self-end rounded-full border border-charcoal/70 px-6 text-xs uppercase tracking-[0.3em] transition hover:border-gold hover:text-gold'
+          'h-10 self-end border-b border-charcoal/70 pb-2 text-xs uppercase tracking-[0.35em] transition hover:border-gold hover:text-gold'
         )}
       >
         Filter

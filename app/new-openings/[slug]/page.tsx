@@ -38,26 +38,28 @@ export default async function NewOpeningPage({ params }: PageProps) {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-6 pb-20 pt-10">
-      <Breadcrumbs
-        items={[
-          { label: 'Home', href: '/' },
-          { label: 'New Openings', href: '/new-openings' },
-          { label: article.title }
-        ]}
-      />
+    <div className="flex w-full flex-col gap-16 pb-24">
+      <div className="mx-auto w-full max-w-6xl px-6 pt-8">
+        <Breadcrumbs
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'New Openings', href: '/new-openings' },
+            { label: article.title }
+          ]}
+        />
+      </div>
 
-      <section className="relative h-[50vh] min-h-[320px] overflow-hidden rounded-[36px]">
+      <section className="relative h-[65vh] min-h-[380px] w-full">
         <Image src={article.hero_image} alt={article.title} fill className="object-cover" sizes="100vw" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-        <div className="absolute bottom-8 left-8 text-white">
-          <p className="text-xs uppercase tracking-[0.3em] text-white/70">New opening</p>
-          <h1 className="mt-3 font-serif text-4xl">{article.title}</h1>
-          <p className="mt-3 text-sm text-white/80">{article.subtitle}</p>
+        <div className="absolute bottom-10 left-8 text-white sm:left-12">
+          <p className="text-[0.65rem] uppercase tracking-[0.35em] text-white/70">New opening</p>
+          <h1 className="mt-4 font-serif text-5xl">{article.title}</h1>
+          <p className="mt-4 max-w-2xl text-sm text-white/80">{article.subtitle}</p>
         </div>
       </section>
 
-      <section className="rounded-[32px] border border-mist bg-white/70 p-10 shadow-soft-card">
+      <section className="body-max px-6">
         <MarkdownContent content={article.content_md} />
       </section>
     </div>

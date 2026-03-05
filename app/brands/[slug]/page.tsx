@@ -42,60 +42,63 @@ export default async function BrandPage({ params }: PageProps) {
   const hotels = getHotelsByBrand(brand.slug);
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-20 pt-10">
-      <Breadcrumbs
-        items={[
-          { label: 'Home', href: '/' },
-          { label: 'Brands', href: '/brands' },
-          { label: brand.name }
-        ]}
-      />
+    <div className="flex w-full flex-col gap-16 pb-24">
+      <div className="mx-auto w-full max-w-6xl px-6 pt-8">
+        <Breadcrumbs
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Brands', href: '/brands' },
+            { label: brand.name }
+          ]}
+        />
+      </div>
 
-      <section className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="relative h-[420px] overflow-hidden rounded-[36px]">
-          <Image src={brand.hero_image} alt={brand.name} fill className="object-cover" sizes="100vw" />
-        </div>
-        <div className="flex flex-col justify-between rounded-[36px] border border-mist bg-white/70 p-8 shadow-soft-card">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">Brand profile</p>
-            <h1 className="mt-4 font-serif text-4xl">{brand.name}</h1>
-            <p className="mt-4 text-sm leading-relaxed text-charcoal/70">{brand.tagline}</p>
-          </div>
-          <div className="mt-8 grid gap-4 text-sm text-charcoal/70">
-            <div className="flex items-center justify-between">
-              <span>Founded</span>
-              <span>{brand.founded_year}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Parent</span>
-              <span>{brand.parent_company}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Signature</span>
-              <span>{brand.best_property}</span>
-            </div>
-          </div>
-          <Link
-            href={brand.website}
-            className="mt-6 rounded-full border border-charcoal/60 px-6 py-3 text-xs uppercase tracking-[0.3em] text-center hover:border-gold hover:text-gold"
-          >
-            Visit brand
-          </Link>
+      <section className="relative h-[65vh] min-h-[420px] w-full">
+        <Image src={brand.hero_image} alt={brand.name} fill className="object-cover" sizes="100vw" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+        <div className="absolute bottom-10 left-8 text-white sm:left-12">
+          <p className="text-[0.65rem] uppercase tracking-[0.35em] text-white/70">Brand profile</p>
+          <h1 className="mt-4 font-serif text-5xl">{brand.name}</h1>
+          <p className="mt-4 max-w-xl text-sm text-white/80">{brand.tagline}</p>
         </div>
       </section>
 
-      <section className="rounded-[32px] border border-mist bg-white/70 p-10 shadow-soft-card">
+      <section className="body-max px-6">
+        <div className="section-rule" />
+        <div className="mt-6 grid gap-4 text-sm text-charcoal/70">
+          <div className="flex items-center justify-between">
+            <span>Founded</span>
+            <span>{brand.founded_year}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>Parent</span>
+            <span>{brand.parent_company}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>Signature property</span>
+            <span>{brand.best_property}</span>
+          </div>
+        </div>
+        <Link
+          href={brand.website}
+          className="mt-6 inline-flex border-b border-charcoal/70 pb-2 text-[0.65rem] uppercase tracking-[0.35em] hover:border-gold hover:text-gold"
+        >
+          Visit brand
+        </Link>
+      </section>
+
+      <section className="body-max px-6">
         <MarkdownContent content={brand.content_md} />
       </section>
 
-      <section className="grid gap-6">
+      <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6">
         <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">Reviewed hotels</p>
-          <h2 className="section-title mt-3">The Turndown on {brand.name}</h2>
+          <p className="kicker">Reviewed hotels</p>
+          <h2 className="section-title mt-4 text-4xl sm:text-5xl">The Turndown on {brand.name}</h2>
         </div>
-        <div className="grid gap-6 md:grid-cols-2">
-          {hotels.map((hotel) => (
-            <ReviewCard key={hotel.slug} hotel={hotel} />
+        <div className="grid gap-10 md:grid-cols-2">
+          {hotels.map((hotel, index) => (
+            <ReviewCard key={hotel.slug} hotel={hotel} className={index % 2 === 1 ? 'md:mt-16' : ''} />
           ))}
         </div>
       </section>

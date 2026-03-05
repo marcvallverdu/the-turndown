@@ -10,21 +10,21 @@ export default function VerdictCard({
   standout: string;
 }) {
   return (
-    <div className="rounded-3xl border border-gold/60 bg-white/70 p-8 shadow-soft-card">
-      <p className="text-xs uppercase tracking-[0.3em] text-gold">The Verdict</p>
-      <h3 className="mt-3 font-serif text-3xl leading-tight">{tagline}</h3>
-      <div className="mt-6 grid gap-4 text-sm text-charcoal/80 md:grid-cols-3">
+    <div className="border-l-2 border-gold bg-white/40 px-8 py-10">
+      <p className="text-[0.65rem] uppercase tracking-[0.35em] text-gold">The Verdict</p>
+      <h3 className="mt-4 font-serif text-3xl leading-tight">{tagline}</h3>
+      <div className="mt-8 grid gap-6 text-sm text-charcoal/80 md:grid-cols-3">
         <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">Best for</p>
-          <p className="mt-2 leading-relaxed">{bestFor}</p>
+          <p className="text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/50">Best for</p>
+          <p className="mt-3 leading-relaxed">{bestFor}</p>
         </div>
         <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">Skip if</p>
-          <p className="mt-2 leading-relaxed">{skipIf}</p>
+          <p className="text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/50">Skip if</p>
+          <p className="mt-3 leading-relaxed">{skipIf}</p>
         </div>
         <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">Standout</p>
-          <p className="mt-2 leading-relaxed">{standout}</p>
+          <p className="text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/50">Standout</p>
+          <p className="mt-3 leading-relaxed">{standout}</p>
         </div>
       </div>
     </div>

@@ -1,35 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { cn } from '@/lib/cn';
 
-const copyByVariant = {
-  inline: {
-    title: 'Join the evening edition',
-    subtitle: 'A monthly dispatch with new reviews, design notes, and openings worth flying for.'
-  },
-  popup: {
-    title: 'Stay for a nightcap',
-    subtitle: `Get our Sunday roundup of the world's most serene hotels.`
-  }
-};
-
 type Props = {
-  variant?: 'inline' | 'popup';
   title?: string;
+  subtitle?: string;
   compact?: boolean;
 };
 
-export default function NewsletterSignup({ variant = 'inline', title, compact }: Props) {
+export default function NewsletterSignup({ title, subtitle, compact }: Props) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [showPopup, setShowPopup] = useState(false);
-
-  useEffect(() => {
-    if (variant !== 'popup') return;
-    const timer = setTimeout(() => setShowPopup(true), 2200);
-    return () => clearTimeout(timer);
-  }, [variant]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -49,29 +31,12 @@ export default function NewsletterSignup({ variant = 'inline', title, compact }:
     }
   };
 
-  if (variant === 'popup' && !showPopup) return null;
-
-  const copy = copyByVariant[variant];
-
   return (
-    <div
-      className={cn(
-        'relative',
-        variant === 'popup' &&
-          'fixed bottom-6 right-6 z-50 w-[90vw] max-w-sm rounded-3xl border border-mist bg-ivory/95 p-6 shadow-soft-card backdrop-blur'
-      )}
-    >
-      {variant === 'popup' && (
-        <button
-          type="button"
-          onClick={() => setShowPopup(false)}
-          className="absolute right-4 top-4 text-xs uppercase tracking-[0.2em] text-charcoal/60"
-        >
-          Close
-        </button>
-      )}
-      <p className={cn('font-serif text-2xl', compact && 'text-xl')}>{title || copy.title}</p>
-      <p className="mt-3 text-sm leading-relaxed text-charcoal/70">{copy.subtitle}</p>
+    <div className="relative">
+      <p className={cn('font-serif text-2xl', compact && 'text-xl')}>{title || 'The Evening Edition'}</p>
+      <p className="mt-3 text-sm leading-relaxed text-charcoal/70">
+        {subtitle || 'A monthly dispatch of new reviews, openings, and the details worth slowing down for.'}
+      </p>
       <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-3">
         <input
           type="email"
@@ -79,11 +44,11 @@ export default function NewsletterSignup({ variant = 'inline', title, compact }:
           placeholder="you@domain.com"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="rounded-full border border-mist bg-white px-4 py-3 text-sm outline-none transition focus:border-gold"
+          className="border-b border-mist bg-transparent px-2 py-3 text-sm outline-none transition focus:border-gold"
         />
         <button
           type="submit"
-          className="rounded-full border border-charcoal/70 px-5 py-3 text-xs uppercase tracking-[0.3em] transition hover:border-gold hover:text-gold"
+          className="self-start border-b border-charcoal/70 pb-2 text-xs uppercase tracking-[0.35em] transition hover:border-gold hover:text-gold"
           disabled={status === 'loading'}
         >
           {status === 'loading' ? 'Sending' : 'Subscribe'}

@@ -30,10 +30,10 @@ export default async function ReviewsPage({ searchParams }: PageProps) {
   const hotels = getAllHotels(filters);
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pb-20 pt-12">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pb-24 pt-12">
       <section>
-        <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">Reviews</p>
-        <h1 className="mt-4 font-serif text-5xl">Every review, curated.</h1>
+        <p className="kicker">Reviews</p>
+        <h1 className="mt-4 font-serif text-5xl sm:text-6xl">Every review, curated.</h1>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-charcoal/70">
           Filter by brand, destination, or nightly rate to find the stays that match your pace.
         </p>
@@ -43,9 +43,9 @@ export default async function ReviewsPage({ searchParams }: PageProps) {
         destinations={destinations}
         current={{ brand: sp?.brand, destination: sp?.destination, price }}
       />
-      <section className="grid gap-6 md:grid-cols-2">
-        {hotels.map((hotel) => (
-          <ReviewCard key={hotel.slug} hotel={hotel} />
+      <section className="grid gap-12 md:grid-cols-2">
+        {hotels.map((hotel, index) => (
+          <ReviewCard key={hotel.slug} hotel={hotel} className={index % 2 === 1 ? 'md:mt-16' : ''} />
         ))}
       </section>
     </div>

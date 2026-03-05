@@ -46,6 +46,11 @@ export default async function ReviewPage({ params }: PageProps) {
   const relatedByBrand = getHotelsByBrand(hotel.brand_slug).filter((item) => item.slug !== hotel.slug).slice(0, 2);
   const relatedByRegion = getHotelsByRegion(hotel.region_slug, 2).filter((item) => item.slug !== hotel.slug);
   const gallery = jsonParse<string[]>(hotel.images, []);
+  const getPullQuote = (text: string) => {
+    const sentence = text.split('. ').find((line) => line.trim().length > 0);
+    if (!sentence) return '';
+    return sentence.endsWith('.') ? sentence : `${sentence}.`;
+  };
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -81,161 +86,148 @@ export default async function ReviewPage({ params }: PageProps) {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-20 pt-10">
+    <div className="flex w-full flex-col gap-16 pb-24">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <Breadcrumbs
-        items={[
-          { label: 'Home', href: '/' },
-          { label: 'Reviews', href: '/reviews' },
-          { label: hotel.name }
-        ]}
-      />
+      <div className="mx-auto w-full max-w-6xl px-6 pt-8">
+        <Breadcrumbs
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Reviews', href: '/reviews' },
+            { label: hotel.name }
+          ]}
+        />
+      </div>
 
-      <section className="relative overflow-hidden rounded-[40px]">
-        <div className="relative h-[70vh] min-h-[420px]">
-          <Image src={hotel.hero_image} alt={hotel.name} fill priority className="object-cover" sizes="100vw" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-        </div>
-        <div className="absolute inset-x-8 bottom-8 flex flex-col gap-4 text-white">
+      <section className="relative h-[80vh] min-h-[520px] w-full">
+        <Image src={hotel.hero_image} alt={hotel.name} fill priority className="object-cover" sizes="100vw" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+        <div className="absolute bottom-10 left-8 flex max-w-3xl flex-col gap-4 text-white sm:left-12">
           <BrandBadge label={hotel.brand} />
           <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl">{hotel.name}</h1>
-          <p className="text-sm uppercase tracking-[0.3em] text-white/70">{hotel.location}</p>
+          <p className="text-[0.7rem] uppercase tracking-[0.35em] text-white/70">{hotel.location}</p>
         </div>
       </section>
 
-      <section className="grid gap-10 lg:grid-cols-[2fr_1fr]">
-        <div className="space-y-10">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">The Introduction</p>
-            <p className="mt-4 text-sm leading-relaxed text-charcoal/80">{hotel.review_intro}</p>
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">The Arrival</p>
-            <p className="mt-4 text-sm leading-relaxed text-charcoal/80">{hotel.review_arrival}</p>
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">The Room</p>
-            <p className="mt-4 text-sm leading-relaxed text-charcoal/80">{hotel.review_room}</p>
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">The Service</p>
-            <p className="mt-4 text-sm leading-relaxed text-charcoal/80">{hotel.review_service}</p>
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">Food & Drink</p>
-            <p className="mt-4 text-sm leading-relaxed text-charcoal/80">{hotel.review_food}</p>
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">The Details</p>
-            <p className="mt-4 text-sm leading-relaxed text-charcoal/80">{hotel.review_details}</p>
+      <section className="body-max px-6">
+        <div className="flex flex-wrap items-center gap-6 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/60">
+          <span>{hotel.style}</span>
+          <span>{formatPriceRange(hotel.price_range)}</span>
+          <span>{bestFor.join(', ')}</span>
+        </div>
+        <div className="mt-6 flex items-baseline gap-6">
+          <RatingDisplay value={hotel.rating_overall} />
+          <div className="text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">
+            Room {hotel.rating_room} · Service {hotel.rating_service} · Food {hotel.rating_food}
           </div>
         </div>
-
-        <aside className="space-y-6">
-          <div className="rounded-3xl border border-mist bg-white/70 p-6 shadow-soft-card">
-            <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">Overall</p>
-            <div className="mt-3">
-              <RatingDisplay value={hotel.rating_overall} />
-            </div>
-            <div className="mt-5 space-y-3 text-sm text-charcoal/70">
-              <div className="flex items-center justify-between">
-                <span>Room</span>
-                <span>{hotel.rating_room}/10</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Service</span>
-                <span>{hotel.rating_service}/10</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Food</span>
-                <span>{hotel.rating_food}/10</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Value</span>
-                <span>{hotel.rating_value}/10</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Location</span>
-                <span>{hotel.rating_location}/10</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-3xl border border-mist bg-white/70 p-6 text-sm shadow-soft-card">
-            <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">At a glance</p>
-            <ul className="mt-4 space-y-3 text-charcoal/70">
-              <li className="flex items-center justify-between">
-                <span>Style</span>
-                <span>{hotel.style}</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span>Price</span>
-                <span>{formatPriceRange(hotel.price_range)}</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span>Best for</span>
-                <span>{bestFor.join(', ')}</span>
-              </li>
-            </ul>
-            <div className="mt-6 flex flex-col gap-3">
-              <Link
-                href={hotel.website}
-                className="rounded-full border border-charcoal/60 px-4 py-2 text-xs uppercase tracking-[0.3em] text-center hover:border-gold hover:text-gold"
-              >
-                Official site
-              </Link>
-              <Link
-                href={hotel.booking_url}
-                className="rounded-full border border-charcoal/60 px-4 py-2 text-xs uppercase tracking-[0.3em] text-center hover:border-gold hover:text-gold"
-              >
-                Booking link
-              </Link>
-            </div>
-          </div>
-        </aside>
       </section>
 
-      {gallery.length > 0 && (
-        <section className="grid gap-4 md:grid-cols-3">
-          {gallery.slice(0, 3).map((image: string) => (
-            <div key={image} className="relative h-64 overflow-hidden rounded-3xl">
-              <Image
-                src={image}
-                alt={`${hotel.name} gallery`}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 33vw"
-              />
-            </div>
-          ))}
+      <section className="body-max px-6">
+        <div className="section-rule" />
+        <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">The Introduction</p>
+        <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-charcoal/80">{hotel.review_intro}</p>
+      </section>
+
+      {gallery[0] && (
+        <section className="relative h-[520px] w-full">
+          <Image src={gallery[0]} alt={`${hotel.name} gallery`} fill className="object-cover" sizes="100vw" />
         </section>
       )}
 
-      <section className="space-y-6">
+      <section className="body-max px-6">
+        <div className="section-rule" />
+        <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">The Arrival</p>
+        <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-charcoal/80">{hotel.review_arrival}</p>
+      </section>
+
+      <section className="body-max px-6">
+        <p className="pull-quote">{getPullQuote(hotel.review_arrival)}</p>
+      </section>
+
+      <section className="body-max px-6">
+        <div className="section-rule" />
+        <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">The Room</p>
+        <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-charcoal/80">{hotel.review_room}</p>
+      </section>
+
+      {gallery[1] && (
+        <section className="relative h-[520px] w-full">
+          <Image src={gallery[1]} alt={`${hotel.name} gallery`} fill className="object-cover" sizes="100vw" />
+        </section>
+      )}
+
+      <section className="body-max px-6">
+        <div className="section-rule" />
+        <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">The Service</p>
+        <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-charcoal/80">{hotel.review_service}</p>
+      </section>
+
+      <section className="body-max px-6">
+        <p className="pull-quote">{getPullQuote(hotel.review_service)}</p>
+      </section>
+
+      <section className="body-max px-6">
+        <div className="section-rule" />
+        <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">Food & Drink</p>
+        <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-charcoal/80">{hotel.review_food}</p>
+      </section>
+
+      {gallery[2] && (
+        <section className="relative h-[520px] w-full">
+          <Image src={gallery[2]} alt={`${hotel.name} gallery`} fill className="object-cover" sizes="100vw" />
+        </section>
+      )}
+
+      <section className="body-max px-6">
+        <div className="section-rule" />
+        <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">The Details</p>
+        <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-charcoal/80">{hotel.review_details}</p>
+      </section>
+
+      <section className="body-max px-6">
+        <p className="pull-quote">{getPullQuote(hotel.review_details)}</p>
+      </section>
+
+      <section className="body-max space-y-10 px-6">
         <VerdictCard
           tagline={hotel.tagline}
           bestFor={hotel.verdict_best_for}
           skipIf={hotel.verdict_skip_if}
           standout={hotel.verdict_standout}
         />
-        <p className="text-sm leading-relaxed text-charcoal/80">{hotel.review_verdict}</p>
+        <div>
+          <div className="section-rule" />
+          <p className="mt-4 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">The Verdict</p>
+          <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-charcoal/80">{hotel.review_verdict}</p>
+        </div>
+        <div className="grid gap-4 text-[0.7rem] uppercase tracking-[0.35em] text-charcoal/60 sm:grid-cols-2">
+          <Link href={hotel.website} className="border-b border-charcoal/70 pb-2 hover:border-gold hover:text-gold">
+            Official site
+          </Link>
+          <Link href={hotel.booking_url} className="border-b border-charcoal/70 pb-2 hover:border-gold hover:text-gold">
+            Booking link
+          </Link>
+        </div>
       </section>
 
       {(relatedByBrand.length > 0 || relatedByRegion.length > 0) && (
-        <section className="grid gap-6">
+        <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">More like this</p>
-            <h2 className="section-title mt-3">More from {hotel.brand}</h2>
+            <p className="kicker">More like this</p>
+            <h2 className="section-title mt-4 text-4xl sm:text-5xl">More from {hotel.brand}</h2>
           </div>
-          <div className="grid gap-6 md:grid-cols-2">
-            {relatedByBrand.map((item) => (
-              <ReviewCard key={item.slug} hotel={item} />
-            ))}
-            {relatedByBrand.length < 2 &&
-              relatedByRegion.slice(0, 2 - relatedByBrand.length).map((item) => (
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+            {relatedByBrand[0] && <ReviewCard hotel={relatedByBrand[0]} variant="feature" />}
+            <div className="flex flex-col gap-10 lg:pt-12">
+              {relatedByBrand.slice(1).map((item) => (
                 <ReviewCard key={item.slug} hotel={item} />
               ))}
+              {relatedByBrand.length < 2 &&
+                relatedByRegion.slice(0, 2 - relatedByBrand.length).map((item) => (
+                  <ReviewCard key={item.slug} hotel={item} />
+                ))}
+            </div>
           </div>
         </section>
       )}

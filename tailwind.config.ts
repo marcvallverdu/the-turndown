@@ -17,13 +17,13 @@ const config: Config = {
       },
       fontFamily: {
         serif: ['var(--font-cormorant)', 'serif'],
-        sans: ['var(--font-inter)', 'sans-serif']
+        sans: ['var(--font-source-serif)', 'serif']
       },
       boxShadow: {
         'soft-card': '0 22px 60px -40px rgba(26, 26, 26, 0.45)'
       },
       backgroundImage: {
-        'linen': 'radial-gradient(circle at 10% 10%, rgba(184, 151, 106, 0.14), transparent 45%), radial-gradient(circle at 90% 20%, rgba(138, 154, 123, 0.12), transparent 45%), radial-gradient(circle at 50% 80%, rgba(232, 228, 223, 0.6), transparent 65%)'
+        'linen': 'radial-gradient(circle at 15% 15%, rgba(184, 151, 106, 0.12), transparent 42%), radial-gradient(circle at 85% 20%, rgba(138, 154, 123, 0.08), transparent 48%), radial-gradient(circle at 50% 78%, rgba(26, 26, 26, 0.04), transparent 60%), linear-gradient(180deg, rgba(250, 248, 245, 0.96), rgba(250, 248, 245, 0.9))'
       }
     }
   },
