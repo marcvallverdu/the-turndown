@@ -45,7 +45,7 @@ export default function Header() {
       </div>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-ivory/95 px-6 py-8 backdrop-blur">
+        <div className="fixed inset-0 z-50 flex flex-col bg-ivory px-6 py-8">
           <div className="flex items-center justify-between">
             <span className="text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/60">Navigation</span>
             <button

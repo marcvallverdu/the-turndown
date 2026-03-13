@@ -9,11 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ivory: '#FAF8F5',
-        charcoal: '#1A1A1A',
-        gold: '#B8976A',
-        sage: '#8A9A7B',
-        mist: '#E8E4DF'
+        ivory: 'rgb(250 248 245 / <alpha-value>)',
+        charcoal: 'rgb(26 26 26 / <alpha-value>)',
+        gold: 'rgb(184 151 106 / <alpha-value>)',
+        sage: 'rgb(138 154 123 / <alpha-value>)',
+        mist: 'rgb(232 228 223 / <alpha-value>)'
       },
       fontFamily: {
         serif: ['var(--font-cormorant)', 'serif'],
