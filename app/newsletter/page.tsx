@@ -25,7 +25,7 @@ export default function NewsletterPage() {
         <p className="kicker">Newsletter</p>
         <h1 className="mt-4 font-serif text-5xl sm:text-6xl">Stay for the nightcap.</h1>
         <p className="mt-4 text-sm leading-relaxed text-charcoal/70">
-          We send a monthly letter with new reviews, forthcoming openings, and design notes from the hotels we love.
+          We send an automatic letter when new reviews, forthcoming openings, and design notes are ready.
         </p>
         <div className="mt-8">
           <NewsletterSignup />

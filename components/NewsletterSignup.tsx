@@ -35,7 +35,7 @@ export default function NewsletterSignup({ title, subtitle, compact }: Props) {
     <div className="relative">
       <p className={cn('font-serif text-2xl', compact && 'text-xl')}>{title || 'The Evening Edition'}</p>
       <p className="mt-3 text-sm leading-relaxed text-charcoal/70">
-        {subtitle || 'A monthly dispatch of new reviews, openings, and the details worth slowing down for.'}
+        {subtitle || 'An automatic dispatch of new reviews, openings, and the details worth slowing down for.'}
       </p>
       <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-3">
         <input
