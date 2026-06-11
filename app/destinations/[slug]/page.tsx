@@ -7,7 +7,7 @@ import ReviewCard from '@/components/ReviewCard';
 import JsonLd from '@/components/JsonLd';
 import { getDestinationBySlug, getHotelsForDestination } from '@/lib/db';
 
-export const dynamic = `force-dynamic`;
+export const revalidate = 3600;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -66,6 +66,7 @@ export default async function DestinationPage({ params }: PageProps) {
       <JsonLd data={jsonLd} />
       <div className="mx-auto w-full max-w-6xl px-6 pt-8">
         <Breadcrumbs
+          currentPath={`/destinations/${destination.slug}`}
           items={[
             { label: 'Home', href: '/' },
             { label: 'Destinations', href: '/destinations' },

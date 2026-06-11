@@ -1,14 +1,13 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import MarkdownContent from '@/components/MarkdownContent';
 import ReviewCard from '@/components/ReviewCard';
 import JsonLd from '@/components/JsonLd';
 import { getBrandBySlug, getHotelsByBrand } from '@/lib/db';
 
-export const dynamic = `force-dynamic`;
+export const revalidate = 3600;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -62,6 +61,7 @@ export default async function BrandPage({ params }: PageProps) {
       <JsonLd data={jsonLd} />
       <div className="mx-auto w-full max-w-6xl px-6 pt-8">
         <Breadcrumbs
+          currentPath={`/brands/${brand.slug}`}
           items={[
             { label: 'Home', href: '/' },
             { label: 'Brands', href: '/brands' },
@@ -96,12 +96,14 @@ export default async function BrandPage({ params }: PageProps) {
             <span>{brand.best_property}</span>
           </div>
         </div>
-        <Link
+        <a
           href={brand.website}
+          target="_blank"
+          rel="noopener noreferrer"
           className="mt-6 inline-flex border-b border-charcoal/70 pb-2 text-[0.65rem] uppercase tracking-[0.35em] hover:border-gold hover:text-gold"
         >
           Visit brand
-        </Link>
+        </a>
       </section>
 
       <section className="body-max px-6">

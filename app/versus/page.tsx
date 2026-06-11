@@ -1,10 +1,11 @@
+import { connection } from 'next/server';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import JsonLd from '@/components/JsonLd';
 import { getArticlesByCategory } from '@/lib/db';
 
-export const dynamic = `force-dynamic`;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: `Luxury Hotel Comparisons`,
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
 };
 
 export default async function VersusPage() {
+  await connection();
   const articles = await getArticlesByCategory(`versus`);
 
   const jsonLd = {

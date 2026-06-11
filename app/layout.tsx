@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Source_Serif_4 } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo';
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -32,12 +33,21 @@ export const metadata: Metadata = {
     description:
       'Luxury hotel reviews, brand profiles, and destination guides with a magazine sensibility.',
     url: 'https://theturndown.co',
-    siteName: 'The Turndown'
+    siteName: 'The Turndown',
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: 'The Turndown luxury hotel reviews'
+      }
+    ]
   },
   twitter: {
     card: 'summary_large_image',
     title: 'The Turndown',
-    description: 'Luxury hotel reviews, brand profiles, and destination guides.'
+    description: 'Luxury hotel reviews, brand profiles, and destination guides.',
+    images: [DEFAULT_OG_IMAGE]
   }
 };
 

@@ -2,10 +2,12 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import JsonLd from '@/components/JsonLd';
 import MarkdownContent from '@/components/MarkdownContent';
 import { getArticleBySlugAndCategory } from '@/lib/db';
+import { articleJsonLd } from '@/lib/seo';
 
-export const dynamic = `force-dynamic`;
+export const revalidate = 3600;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -13,16 +15,25 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const article = await getArticleBySlugAndCategory(slug, `the-details`);
   if (!article) return { title: `Essay` };
+  const path = `/the-details/${article.slug}`;
   return {
     title: article.title,
     description: article.subtitle,
     alternates: {
-      canonical: `https://theturndown.co/the-details/${article.slug}`
+      canonical: `https://theturndown.co${path}`
     },
     openGraph: {
+      type: 'article',
+      url: path,
       title: article.title,
       description: article.subtitle,
       images: [{ url: article.hero_image }]
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.title,
+      description: article.subtitle,
+      images: [article.hero_image]
     }
   };
 }
@@ -32,10 +43,14 @@ export default async function TheDetailsArticlePage({ params }: PageProps) {
   const article = await getArticleBySlugAndCategory(slug, `the-details`);
   if (!article) notFound();
 
+  const path = `/the-details/${article.slug}`;
+
   return (
     <div className="flex w-full flex-col gap-16 pb-24">
+      <JsonLd data={articleJsonLd(article, path, `The Details`)} />
       <div className="mx-auto w-full max-w-6xl px-6 pt-8">
         <Breadcrumbs
+          currentPath={path}
           items={[
             { label: 'Home', href: '/' },
             { label: 'The Details', href: '/the-details' },

@@ -1,3 +1,4 @@
+import { connection } from 'next/server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import HeroImage from '@/components/HeroImage';
@@ -6,7 +7,7 @@ import NewsletterSignup from '@/components/NewsletterSignup';
 import JsonLd from '@/components/JsonLd';
 import { getAllBrands, getFeaturedHotels, getLatestArticleByCategory, getLatestHotels } from '@/lib/db';
 
-export const dynamic = `force-dynamic`;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: 'Luxury Hotel Reviews, Destination Guides & Brand Profiles',
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
+  await connection();
   const [featuredHotels, latestReviews, latestEssay, brands] = await Promise.all([
     getFeaturedHotels(1),
     getLatestHotels(4),

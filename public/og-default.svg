@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">The Turndown</title>
+  <desc id="desc">A branded social preview image for The Turndown.</desc>
+  <rect width="1200" height="630" fill="#f7f1e6"/>
+  <rect x="48" y="48" width="1104" height="534" fill="none" stroke="#9b7a3f" stroke-width="2"/>
+  <text x="600" y="255" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="82" letter-spacing="1" fill="#241f1a">The Turndown</text>
+  <line x1="420" y1="305" x2="780" y2="305" stroke="#9b7a3f" stroke-width="2"/>
+  <text x="600" y="370" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="28" letter-spacing="7" fill="#5d5348">LUXURY HOTEL REVIEWS</text>
+</svg>

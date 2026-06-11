@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import MarkdownContent from '@/components/MarkdownContent';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: `About The Turndown`,
@@ -9,12 +10,14 @@ export const metadata: Metadata = {
     type: 'website',
     url: `/about`,
     title: `About The Turndown`,
-    description: `About The Turndown, an editorial guide to luxury hotels, destination intelligence, and considered travel.`
+    description: `About The Turndown, an editorial guide to luxury hotels, destination intelligence, and considered travel.`,
+    images: [DEFAULT_OG_IMAGE]
   },
   twitter: {
     card: 'summary_large_image',
     title: `About The Turndown`,
-    description: `About The Turndown, an editorial guide to luxury hotels, destination intelligence, and considered travel.`
+    description: `About The Turndown, an editorial guide to luxury hotels, destination intelligence, and considered travel.`,
+    images: [DEFAULT_OG_IMAGE]
   }
 };
 

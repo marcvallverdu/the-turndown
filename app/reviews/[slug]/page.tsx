@@ -1,14 +1,15 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import BrandBadge from '@/components/BrandBadge';
 import RatingDisplay from '@/components/RatingDisplay';
 import VerdictCard from '@/components/VerdictCard';
 import ReviewCard from '@/components/ReviewCard';
 import ReviewMethodology from '@/components/ReviewMethodology';
+import JsonLd from '@/components/JsonLd';
 import { getHotelBySlug, getHotelsByBrand, getHotelsByRegion } from '@/lib/db';
+import { absoluteUrl, compactJsonLd, imageUrl, publisher } from '@/lib/seo';
 import { formatPriceRange, jsonParse } from '@/lib/utils';
 
 function Paragraphs({ text }: { text?: string | null }) {
@@ -25,7 +26,7 @@ function Paragraphs({ text }: { text?: string | null }) {
   );
 }
 
-export const dynamic = `force-dynamic`;
+export const revalidate = 3600;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -40,9 +41,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       canonical: `https://theturndown.co/reviews/${hotel.slug}`
     },
     openGraph: {
+      type: 'article',
+      url: `https://theturndown.co/reviews/${hotel.slug}`,
       title: `${hotel.name} Review`,
       description: hotel.tagline,
       images: [{ url: hotel.hero_image }]
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${hotel.name} Review`,
+      description: hotel.tagline,
+      images: [hotel.hero_image]
     }
   };
 }
@@ -66,45 +75,53 @@ export default async function ReviewPage({ params }: PageProps) {
     return sentence.endsWith(`.`) ? sentence : `${sentence}.`;
   };
 
-  const jsonLd = {
+  const reviewUrl = absoluteUrl(`/reviews/${hotel.slug}`);
+  const jsonLd = compactJsonLd({
     '@context': `https://schema.org`,
-    '@type': `Hotel`,
-    name: hotel.name,
+    '@type': `Review`,
+    headline: `${hotel.name} Review`,
+    name: `${hotel.name} Review`,
     description: hotel.tagline,
-    url: `https://theturndown.co/reviews/${hotel.slug}`,
-    image: hotel.hero_image,
-    address: {
-      '@type': `PostalAddress`,
-      addressLocality: hotel.location,
-      addressCountry: hotel.country
+    url: reviewUrl,
+    image: imageUrl(hotel.hero_image),
+    datePublished: hotel.created_at,
+    dateModified: hotel.updated_at || hotel.created_at,
+    author: publisher,
+    publisher,
+    reviewBody: hotel.review_verdict,
+    reviewRating: hotel.rating_overall
+      ? {
+          '@type': `Rating`,
+          ratingValue: hotel.rating_overall,
+          bestRating: 10,
+          worstRating: 0
+        }
+      : undefined,
+    itemReviewed: {
+      '@type': `Hotel`,
+      name: hotel.name,
+      description: hotel.tagline,
+      url: hotel.website,
+      image: imageUrl(hotel.hero_image),
+      address: {
+        '@type': `PostalAddress`,
+        addressLocality: hotel.location,
+        addressCountry: hotel.country
+      }
     },
-    aggregateRating: {
-      '@type': `AggregateRating`,
-      ratingValue: hotel.rating_overall,
-      bestRating: 10,
-      worstRating: 0,
-      ratingCount: 1
-    },
-    review: {
-      '@type': `Review`,
-      reviewRating: {
-        '@type': `Rating`,
-        ratingValue: hotel.rating_overall,
-        bestRating: 10
-      },
-      author: {
-        '@type': `Organization`, name: `The Turndown`
-      },
-      reviewBody: hotel.review_verdict
+    mainEntityOfPage: {
+      '@type': `WebPage`,
+      '@id': reviewUrl
     }
-  };
+  });
 
   return (
     <div className="flex w-full flex-col gap-16 pb-24">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <JsonLd data={jsonLd} />
 
       <div className="mx-auto w-full max-w-6xl px-6 pt-8">
         <Breadcrumbs
+          currentPath={`/reviews/${hotel.slug}`}
           items={[
             { label: 'Home', href: '/' },
             { label: 'Reviews', href: '/reviews' },
@@ -216,12 +233,22 @@ export default async function ReviewPage({ params }: PageProps) {
           <Paragraphs text={hotel.review_verdict} />
         </div>
         <div className="grid gap-4 text-[0.7rem] uppercase tracking-[0.35em] text-charcoal/60 sm:grid-cols-2">
-          <Link href={hotel.website} className="border-b border-charcoal/70 pb-2 hover:border-gold hover:text-gold">
+          <a
+            href={hotel.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border-b border-charcoal/70 pb-2 hover:border-gold hover:text-gold"
+          >
             Official site
-          </Link>
-          <Link href={hotel.booking_url} className="border-b border-charcoal/70 pb-2 hover:border-gold hover:text-gold">
+          </a>
+          <a
+            href={hotel.booking_url}
+            target="_blank"
+            rel="sponsored nofollow noopener noreferrer"
+            className="border-b border-charcoal/70 pb-2 hover:border-gold hover:text-gold"
+          >
             Booking link
-          </Link>
+          </a>
         </div>
       </section>
 

@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { Pool } from 'pg';
 import { schema } from '@/lib/schema';
 
@@ -27,13 +28,13 @@ async function fetchDestinationBySlug(slug: string) {
   return result.rows[0] as { name: string; country?: string } | undefined;
 }
 
-export async function getHotelBySlug(slug: string) {
+async function fetchGetHotelBySlug(slug: string) {
   await ensureSchema();
   const result = await pool.query(`SELECT * FROM hotels WHERE slug = $1 AND published = 1`, [slug]);
   return result.rows[0] as any | undefined;
 }
 
-export async function getAllHotels(filters?: HotelFilters) {
+async function fetchGetAllHotels(filters?: HotelFilters) {
   await ensureSchema();
   let query = `SELECT * FROM hotels WHERE published = 1`;
   const params: any[] = [];
@@ -73,7 +74,7 @@ export async function getAllHotels(filters?: HotelFilters) {
   return result.rows as any[];
 }
 
-export async function getLatestHotels(limit = 4) {
+async function fetchGetLatestHotels(limit = 4) {
   await ensureSchema();
   const result = await pool.query(
     `SELECT * FROM hotels WHERE published = 1 ORDER BY created_at DESC LIMIT $1`,
@@ -82,7 +83,7 @@ export async function getLatestHotels(limit = 4) {
   return result.rows as any[];
 }
 
-export async function getFeaturedHotels(limit = 1) {
+async function fetchGetFeaturedHotels(limit = 1) {
   await ensureSchema();
   const result = await pool.query(
     `SELECT * FROM hotels WHERE published = 1 AND featured = 1 ORDER BY created_at DESC LIMIT $1`,
@@ -91,7 +92,7 @@ export async function getFeaturedHotels(limit = 1) {
   return result.rows as any[];
 }
 
-export async function getHotelsByBrand(brandSlug: string) {
+async function fetchGetHotelsByBrand(brandSlug: string) {
   await ensureSchema();
   const result = await pool.query(
     `SELECT * FROM hotels WHERE brand_slug = $1 AND published = 1 ORDER BY created_at DESC`,
@@ -100,7 +101,7 @@ export async function getHotelsByBrand(brandSlug: string) {
   return result.rows as any[];
 }
 
-export async function getHotelsByRegion(regionSlug: string, limit = 3) {
+async function fetchGetHotelsByRegion(regionSlug: string, limit = 3) {
   await ensureSchema();
   const result = await pool.query(
     `SELECT * FROM hotels WHERE region_slug = $1 AND published = 1 ORDER BY created_at DESC LIMIT $2`,
@@ -109,31 +110,31 @@ export async function getHotelsByRegion(regionSlug: string, limit = 3) {
   return result.rows as any[];
 }
 
-export async function getAllBrands() {
+async function fetchGetAllBrands() {
   await ensureSchema();
   const result = await pool.query(`SELECT * FROM brands WHERE published = 1 ORDER BY name`);
   return result.rows as any[];
 }
 
-export async function getBrandBySlug(slug: string) {
+async function fetchGetBrandBySlug(slug: string) {
   await ensureSchema();
   const result = await pool.query(`SELECT * FROM brands WHERE slug = $1 AND published = 1`, [slug]);
   return result.rows[0] as any | undefined;
 }
 
-export async function getAllDestinations() {
+async function fetchGetAllDestinations() {
   await ensureSchema();
   const result = await pool.query(`SELECT * FROM destinations WHERE published = 1 ORDER BY name`);
   return result.rows as any[];
 }
 
-export async function getDestinationBySlug(slug: string) {
+async function fetchGetDestinationBySlug(slug: string) {
   await ensureSchema();
   const result = await pool.query(`SELECT * FROM destinations WHERE slug = $1 AND published = 1`, [slug]);
   return result.rows[0] as any | undefined;
 }
 
-export async function getHotelsForDestination(destination: { name: string; country?: string; slug: string }) {
+async function fetchGetHotelsForDestination(destination: { name: string; country?: string; slug: string }) {
   await ensureSchema();
   if ([`Tokyo`, `Paris`, `Bora Bora`].includes(destination.name)) {
     const result = await pool.query(
@@ -151,7 +152,7 @@ export async function getHotelsForDestination(destination: { name: string; count
   return result.rows as any[];
 }
 
-export async function getArticlesByCategory(category: string) {
+async function fetchGetArticlesByCategory(category: string) {
   await ensureSchema();
   const result = await pool.query(
     `SELECT * FROM articles WHERE category = $1 AND published = 1 ORDER BY created_at DESC`,
@@ -160,13 +161,13 @@ export async function getArticlesByCategory(category: string) {
   return result.rows as any[];
 }
 
-export async function getArticleBySlug(slug: string) {
+async function fetchGetArticleBySlug(slug: string) {
   await ensureSchema();
   const result = await pool.query(`SELECT * FROM articles WHERE slug = $1 AND published = 1`, [slug]);
   return result.rows[0] as any | undefined;
 }
 
-export async function getArticleBySlugAndCategory(slug: string, category: string) {
+async function fetchGetArticleBySlugAndCategory(slug: string, category: string) {
   await ensureSchema();
   const result = await pool.query(
     `SELECT * FROM articles WHERE slug = $1 AND category = $2 AND published = 1`,
@@ -175,7 +176,7 @@ export async function getArticleBySlugAndCategory(slug: string, category: string
   return result.rows[0] as any | undefined;
 }
 
-export async function getLatestArticleByCategory(category: string) {
+async function fetchGetLatestArticleByCategory(category: string) {
   await ensureSchema();
   const result = await pool.query(
     `SELECT * FROM articles WHERE category = $1 AND published = 1 ORDER BY created_at DESC LIMIT 1`,
@@ -184,7 +185,7 @@ export async function getLatestArticleByCategory(category: string) {
   return result.rows[0] as any | undefined;
 }
 
-export async function getArticlesForSitemap() {
+async function fetchGetArticlesForSitemap() {
   await ensureSchema();
   const result = await pool.query(
     `SELECT slug, category, created_at, updated_at
@@ -194,6 +195,26 @@ export async function getArticlesForSitemap() {
   );
   return result.rows as { slug: string; category: string; created_at: string; updated_at: string | null }[];
 }
+
+
+const cacheOptions = { revalidate: 3600 } as const;
+
+export const getHotelBySlug = unstable_cache(fetchGetHotelBySlug, ['getHotelBySlug'], cacheOptions);
+export const getAllHotels = unstable_cache(fetchGetAllHotels, ['getAllHotels'], cacheOptions);
+export const getLatestHotels = unstable_cache(fetchGetLatestHotels, ['getLatestHotels'], cacheOptions);
+export const getFeaturedHotels = unstable_cache(fetchGetFeaturedHotels, ['getFeaturedHotels'], cacheOptions);
+export const getHotelsByBrand = unstable_cache(fetchGetHotelsByBrand, ['getHotelsByBrand'], cacheOptions);
+export const getHotelsByRegion = unstable_cache(fetchGetHotelsByRegion, ['getHotelsByRegion'], cacheOptions);
+export const getAllBrands = unstable_cache(fetchGetAllBrands, ['getAllBrands'], cacheOptions);
+export const getBrandBySlug = unstable_cache(fetchGetBrandBySlug, ['getBrandBySlug'], cacheOptions);
+export const getAllDestinations = unstable_cache(fetchGetAllDestinations, ['getAllDestinations'], cacheOptions);
+export const getDestinationBySlug = unstable_cache(fetchGetDestinationBySlug, ['getDestinationBySlug'], cacheOptions);
+export const getHotelsForDestination = unstable_cache(fetchGetHotelsForDestination, ['getHotelsForDestination'], cacheOptions);
+export const getArticlesByCategory = unstable_cache(fetchGetArticlesByCategory, ['getArticlesByCategory'], cacheOptions);
+export const getArticleBySlug = unstable_cache(fetchGetArticleBySlug, ['getArticleBySlug'], cacheOptions);
+export const getArticleBySlugAndCategory = unstable_cache(fetchGetArticleBySlugAndCategory, ['getArticleBySlugAndCategory'], cacheOptions);
+export const getLatestArticleByCategory = unstable_cache(fetchGetLatestArticleByCategory, ['getLatestArticleByCategory'], cacheOptions);
+export const getArticlesForSitemap = unstable_cache(fetchGetArticlesForSitemap, ['getArticlesForSitemap'], cacheOptions);
 
 export async function insertNewsletterSubscriber(email: string) {
   await ensureSchema();

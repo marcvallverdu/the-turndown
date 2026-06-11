@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next';
-import { getAllBrands, getAllDestinations, getAllHotels, getArticlesForSitemap } from '@/lib/db';
+import { connection } from 'next/server';
+import { getAllBrands, getAllDestinations, getAllHotels, getArticlesForSitemap, getHotelsForDestination } from '@/lib/db';
 
-export const dynamic = `force-dynamic`;
+export const revalidate = 3600;
 
 const articleCategoryPaths: Record<string, string> = {
   'the-details': 'the-details',
@@ -10,6 +11,8 @@ const articleCategoryPaths: Record<string, string> = {
 };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  await connection();
+
   const [hotels, brands, destinations, articles] = await Promise.all([
     getAllHotels(),
     getAllBrands(),
@@ -17,19 +20,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getArticlesForSitemap()
   ]);
 
+  const destinationsWithLandingPages = (
+    await Promise.all(
+      destinations.map(async (destination) => ({
+        destination,
+        hotels: await getHotelsForDestination(destination)
+      }))
+    )
+  ).filter(({ hotels }) => hotels.length >= 2);
+
   const baseUrl = `https://theturndown.co`;
-  const now = new Date();
 
   return [
-    { url: baseUrl, lastModified: now },
-    { url: `${baseUrl}/reviews`, lastModified: now },
-    { url: `${baseUrl}/brands`, lastModified: now },
-    { url: `${baseUrl}/destinations`, lastModified: now },
-    { url: `${baseUrl}/the-details`, lastModified: now },
-    { url: `${baseUrl}/versus`, lastModified: now },
-    { url: `${baseUrl}/new-openings`, lastModified: now },
-    { url: `${baseUrl}/about`, lastModified: now },
-    { url: `${baseUrl}/newsletter`, lastModified: now },
+    { url: baseUrl },
+    { url: `${baseUrl}/reviews` },
+    { url: `${baseUrl}/brands` },
+    { url: `${baseUrl}/destinations` },
+    { url: `${baseUrl}/best-luxury-hotels` },
+    { url: `${baseUrl}/the-details` },
+    { url: `${baseUrl}/versus` },
+    { url: `${baseUrl}/new-openings` },
+    { url: `${baseUrl}/about` },
+    { url: `${baseUrl}/newsletter` },
     ...hotels.map((hotel) => ({
       url: `${baseUrl}/reviews/${hotel.slug}`,
       lastModified: new Date(hotel.updated_at || hotel.created_at)
@@ -40,6 +52,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...destinations.map((destination) => ({
       url: `${baseUrl}/destinations/${destination.slug}`,
+      lastModified: new Date(destination.updated_at || destination.created_at)
+    })),
+    ...destinationsWithLandingPages.map(({ destination }) => ({
+      url: `${baseUrl}/best-luxury-hotels/${destination.slug}`,
       lastModified: new Date(destination.updated_at || destination.created_at)
     })),
     ...articles.map((article) => ({

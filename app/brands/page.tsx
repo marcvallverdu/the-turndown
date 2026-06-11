@@ -1,9 +1,10 @@
+import { connection } from 'next/server';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
 import { getAllBrands } from '@/lib/db';
 
-export const dynamic = `force-dynamic`;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: `Luxury Hotel Brands`,
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
 };
 
 export default async function BrandsPage() {
+  await connection();
   const brands = await getAllBrands();
 
   const jsonLd = {
