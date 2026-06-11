@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import { Pool } from 'pg';
 import { schema } from '@/lib/schema';
+import type { NewsletterArticle, NewsletterSendLog } from '@/lib/newsletter';
 
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL
@@ -216,13 +217,86 @@ export const getArticleBySlugAndCategory = unstable_cache(fetchGetArticleBySlugA
 export const getLatestArticleByCategory = unstable_cache(fetchGetLatestArticleByCategory, ['getLatestArticleByCategory'], cacheOptions);
 export const getArticlesForSitemap = unstable_cache(fetchGetArticlesForSitemap, ['getArticlesForSitemap'], cacheOptions);
 
+export type NewsletterSubscriber = {
+  id: number;
+  email: string;
+  confirmed: number;
+  resend_contact_id?: string | null;
+  resend_synced_at?: string | null;
+};
+
 export async function insertNewsletterSubscriber(email: string) {
   await ensureSchema();
-  await pool.query(
-    `INSERT INTO newsletter_subscribers (email, confirmed) VALUES ($1, 1)
-     ON CONFLICT (email) DO NOTHING`,
+  const result = await pool.query(
+    `INSERT INTO newsletter_subscribers (email, confirmed, updated_at) VALUES ($1, 1, NOW())
+     ON CONFLICT (email) DO UPDATE SET confirmed = 1, updated_at = NOW()
+     RETURNING id, email, confirmed, resend_contact_id, resend_synced_at`,
     [email]
+  );
+  return result.rows[0] as NewsletterSubscriber;
+}
+
+export async function markNewsletterSubscriberSynced(email: string, resendContactId?: string | null) {
+  await ensureSchema();
+  await pool.query(
+    `UPDATE newsletter_subscribers
+     SET resend_contact_id = COALESCE($2, resend_contact_id), resend_synced_at = NOW(), updated_at = NOW()
+     WHERE email = $1`,
+    [email, resendContactId]
   );
 }
 
+export async function getConfirmedNewsletterSubscribers() {
+  await ensureSchema();
+  const result = await pool.query(
+    `SELECT id, email, confirmed, resend_contact_id, resend_synced_at
+     FROM newsletter_subscribers
+     WHERE confirmed = 1
+     ORDER BY created_at ASC`
+  );
+  return result.rows as NewsletterSubscriber[];
+}
+
+export async function getRecentNewsletterArticles(limit = 12) {
+  await ensureSchema();
+  const result = await pool.query(
+    `SELECT slug, title, subtitle, category, created_at
+     FROM articles
+     WHERE published = 1
+       AND category IN ('the-details', 'versus', 'new-openings')
+     ORDER BY created_at DESC
+     LIMIT $1`,
+    [limit]
+  );
+  return result.rows as NewsletterArticle[];
+}
+
+export async function getNewsletterSendLogs() {
+  await ensureSchema();
+  const result = await pool.query(
+    `SELECT article_slug, sent_at
+     FROM newsletter_sends
+     ORDER BY sent_at DESC`
+  );
+  return result.rows as NewsletterSendLog[];
+}
+
+export async function recordNewsletterSend(
+  issueKey: string,
+  articles: NewsletterArticle[],
+  recipientCount: number,
+  providerMessageIds: string[]
+) {
+  await ensureSchema();
+  for (const article of articles) {
+    await pool.query(
+      `INSERT INTO newsletter_sends (issue_key, article_slug, recipient_count, provider_message_ids)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (issue_key, article_slug) DO NOTHING`,
+      [issueKey, article.slug, recipientCount, JSON.stringify(providerMessageIds)]
+    );
+  }
+}
+
 export default pool;
+

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { insertNewsletterSubscriber } from '@/lib/db';
+import { insertNewsletterSubscriber, markNewsletterSubscriberSynced } from '@/lib/db';
+import { syncContactToResendAudience } from '@/lib/email';
 
 export async function POST(request: Request) {
   try {
@@ -10,9 +11,12 @@ export async function POST(request: Request) {
     }
 
     await insertNewsletterSubscriber(email);
+    const contact = await syncContactToResendAudience(email);
+    await markNewsletterSubscriberSynced(email, contact.id);
 
     return NextResponse.json({ ok: true });
   } catch (error) {
+    console.error('newsletter subscribe failed', error);
     return NextResponse.json({ error: `Unable to subscribe` }, { status: 500 });
   }
 }

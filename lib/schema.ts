@@ -96,9 +96,27 @@ CREATE TABLE IF NOT EXISTS newsletter_subscribers (
   id SERIAL PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
   confirmed INTEGER DEFAULT 0,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  resend_contact_id TEXT,
+  resend_synced_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+ALTER TABLE newsletter_subscribers ADD COLUMN IF NOT EXISTS resend_contact_id TEXT;
+ALTER TABLE newsletter_subscribers ADD COLUMN IF NOT EXISTS resend_synced_at TIMESTAMPTZ;
+ALTER TABLE newsletter_subscribers ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
+CREATE TABLE IF NOT EXISTS newsletter_sends (
+  id SERIAL PRIMARY KEY,
+  issue_key TEXT NOT NULL,
+  article_slug TEXT NOT NULL,
+  recipient_count INTEGER NOT NULL DEFAULT 0,
+  provider_message_ids TEXT,
+  sent_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(issue_key, article_slug)
+);
+
+CREATE INDEX IF NOT EXISTS idx_newsletter_sends_article_slug ON newsletter_sends(article_slug);
 CREATE INDEX IF NOT EXISTS idx_hotels_brand ON hotels(brand_slug);
 CREATE INDEX IF NOT EXISTS idx_hotels_country ON hotels(country_slug);
 CREATE INDEX IF NOT EXISTS idx_hotels_region ON hotels(region_slug);
