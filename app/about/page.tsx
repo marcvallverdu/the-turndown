@@ -29,6 +29,10 @@ Every review is reported after extended stays. We pay attention to architecture,
 
 Luxury is not a price point; it is a feeling. It is generosity without noise, craft without theater, and a sense that someone cared about the experience before you arrived. We champion places that feel considered, and we say it plainly when they do not.
 
+## Review standards
+
+The Turndown evaluates hotels on rooms, service, food, atmosphere, design, and the details that shape a stay. We prioritize editorial independence and update reviews and guides as properties renovate, service changes, or new openings reshape a destination.
+
 ## Contact
 
 For editorial partnerships and press inquiries: hello@theturndown.co

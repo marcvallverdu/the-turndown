@@ -7,6 +7,7 @@ import BrandBadge from '@/components/BrandBadge';
 import RatingDisplay from '@/components/RatingDisplay';
 import VerdictCard from '@/components/VerdictCard';
 import ReviewCard from '@/components/ReviewCard';
+import ReviewMethodology from '@/components/ReviewMethodology';
 import { getHotelBySlug, getHotelsByBrand, getHotelsByRegion } from '@/lib/db';
 import { formatPriceRange, jsonParse } from '@/lib/utils';
 
@@ -223,6 +224,8 @@ export default async function ReviewPage({ params }: PageProps) {
           </Link>
         </div>
       </section>
+
+      <ReviewMethodology />
 
       {(filteredByBrand.length > 0 || filteredByRegion.length > 0) && (
         <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6">
