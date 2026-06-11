@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -32,13 +33,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const hotel = await getHotelBySlug(slug);
   if (!hotel) return { title: `Review` };
   return {
-    title: hotel.name,
+    title: `${hotel.name} Review`,
     description: hotel.tagline,
     alternates: {
       canonical: `https://theturndown.co/reviews/${hotel.slug}`
     },
     openGraph: {
-      title: hotel.name,
+      title: `${hotel.name} Review`,
       description: hotel.tagline,
       images: [{ url: hotel.hero_image }]
     }
@@ -48,13 +49,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ReviewPage({ params }: PageProps) {
   const { slug } = await params;
   const hotel = await getHotelBySlug(slug);
-  if (!hotel) {
-    return (
-      <div className="mx-auto max-w-6xl px-6 py-24">
-        <p className="text-sm text-charcoal/60">Review not found.</p>
-      </div>
-    );
-  }
+  if (!hotel) notFound();
 
   const bestFor = jsonParse<string[]>(hotel.best_for, []);
   const [relatedByBrand, relatedByRegion] = await Promise.all([

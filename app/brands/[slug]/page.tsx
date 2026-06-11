@@ -1,9 +1,11 @@
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import MarkdownContent from '@/components/MarkdownContent';
 import ReviewCard from '@/components/ReviewCard';
+import JsonLd from '@/components/JsonLd';
 import { getBrandBySlug, getHotelsByBrand } from '@/lib/db';
 
 export const dynamic = `force-dynamic`;
@@ -15,13 +17,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const brand = await getBrandBySlug(slug);
   if (!brand) return { title: `Brand` };
   return {
-    title: brand.name,
+    title: `${brand.name} Hotels: Brand Guide & Best Properties`,
     description: brand.tagline,
     alternates: {
       canonical: `https://theturndown.co/brands/${brand.slug}`
     },
     openGraph: {
-      title: brand.name,
+      title: `${brand.name} Hotels: Brand Guide & Best Properties`,
       description: brand.tagline,
       images: [{ url: brand.hero_image }]
     }
@@ -31,18 +33,33 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function BrandPage({ params }: PageProps) {
   const { slug } = await params;
   const brand = await getBrandBySlug(slug);
-  if (!brand) {
-    return (
-      <div className="mx-auto max-w-6xl px-6 py-24">
-        <p className="text-sm text-charcoal/60">Brand not found.</p>
-      </div>
-    );
-  }
+  if (!brand) notFound();
 
   const hotels = await getHotelsByBrand(brand.slug);
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Brand',
+    name: brand.name,
+    description: brand.tagline,
+    url: `https://theturndown.co/brands/${brand.slug}`,
+    image: brand.hero_image,
+    sameAs: brand.website,
+    subjectOf: {
+      '@type': 'ItemList',
+      name: `${brand.name} hotel reviews`,
+      itemListElement: hotels.map((hotel, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `https://theturndown.co/reviews/${hotel.slug}`,
+        name: hotel.name
+      }))
+    }
+  };
+
   return (
     <div className="flex w-full flex-col gap-16 pb-24">
+      <JsonLd data={jsonLd} />
       <div className="mx-auto w-full max-w-6xl px-6 pt-8">
         <Breadcrumbs
           items={[
@@ -88,7 +105,7 @@ export default async function BrandPage({ params }: PageProps) {
       </section>
 
       <section className="body-max px-6">
-        <MarkdownContent content={brand.content_md} />
+        <MarkdownContent content={brand.content_md} demoteH1 />
       </section>
 
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6">

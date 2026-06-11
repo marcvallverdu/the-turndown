@@ -2,8 +2,20 @@ import { Metadata } from 'next';
 import NewsletterSignup from '@/components/NewsletterSignup';
 
 export const metadata: Metadata = {
-  title: 'Newsletter',
-  description: 'Subscribe to The Turndown newsletter.'
+  title: `The Turndown Newsletter`,
+  description: `Subscribe to The Turndown for new luxury hotel reviews, destination guides, opening notes, and design dispatches.`,
+  alternates: { canonical: `/newsletter` },
+  openGraph: {
+    type: 'website',
+    url: `/newsletter`,
+    title: `The Turndown Newsletter`,
+    description: `Subscribe to The Turndown for new luxury hotel reviews, destination guides, opening notes, and design dispatches.`
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `The Turndown Newsletter`,
+    description: `Subscribe to The Turndown for new luxury hotel reviews, destination guides, opening notes, and design dispatches.`
+  }
 };
 
 export default function NewsletterPage() {

@@ -1,20 +1,52 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import JsonLd from '@/components/JsonLd';
 import { getArticlesByCategory } from '@/lib/db';
 
 export const dynamic = `force-dynamic`;
 
 export const metadata: Metadata = {
-  title: `New Openings`,
-  description: `The most anticipated new hotel openings.`
+  title: `New Luxury Hotel Openings`,
+  description: `The most anticipated new luxury hotel openings, forthcoming resorts, and notable hospitality launches.`,
+  alternates: { canonical: `/new-openings` },
+  openGraph: {
+    type: 'website',
+    url: `/new-openings`,
+    title: `New Luxury Hotel Openings`,
+    description: `The most anticipated new luxury hotel openings, forthcoming resorts, and notable hospitality launches.`
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `New Luxury Hotel Openings`,
+    description: `The most anticipated new luxury hotel openings, forthcoming resorts, and notable hospitality launches.`
+  }
 };
 
 export default async function NewOpeningsPage() {
   const articles = await getArticlesByCategory(`new-openings`);
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'New Luxury Hotel Openings',
+    url: 'https://theturndown.co/new-openings',
+    description: 'The most anticipated new luxury hotel openings, forthcoming resorts, and notable hospitality launches.',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: articles.map((article, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `https://theturndown.co/new-openings/${article.slug}`,
+        name: article.title
+      }))
+    }
+  };
+
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-24 pt-12">
+    <>
+      <JsonLd data={jsonLd} />
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-24 pt-12">
       <section>
         <p className="kicker">New openings</p>
         <h1 className="mt-4 font-serif text-5xl sm:text-6xl">The arrivals worth a flight.</h1>
@@ -45,6 +77,7 @@ export default async function NewOpeningsPage() {
           </Link>
         ))}
       </section>
-    </div>
+      </div>
+    </>
   );
 }

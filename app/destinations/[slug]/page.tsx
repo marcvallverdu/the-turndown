@@ -1,8 +1,10 @@
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import MarkdownContent from '@/components/MarkdownContent';
 import ReviewCard from '@/components/ReviewCard';
+import JsonLd from '@/components/JsonLd';
 import { getDestinationBySlug, getHotelsForDestination } from '@/lib/db';
 
 export const dynamic = `force-dynamic`;
@@ -14,13 +16,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const destination = await getDestinationBySlug(slug);
   if (!destination) return { title: `Destination` };
   return {
-    title: destination.name,
+    title: `${destination.name} Luxury Hotel Guide`,
     description: destination.intro_md,
     alternates: {
       canonical: `https://theturndown.co/destinations/${destination.slug}`
     },
     openGraph: {
-      title: destination.name,
+      title: `${destination.name} Luxury Hotel Guide`,
       description: destination.intro_md,
       images: [{ url: destination.hero_image }]
     }
@@ -30,18 +32,38 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function DestinationPage({ params }: PageProps) {
   const { slug } = await params;
   const destination = await getDestinationBySlug(slug);
-  if (!destination) {
-    return (
-      <div className="mx-auto max-w-6xl px-6 py-24">
-        <p className="text-sm text-charcoal/60">Destination not found.</p>
-      </div>
-    );
-  }
+  if (!destination) notFound();
 
   const hotels = await getHotelsForDestination(destination);
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TouristDestination',
+    name: destination.name,
+    description: destination.intro_md,
+    url: `https://theturndown.co/destinations/${destination.slug}`,
+    image: destination.hero_image,
+    containedInPlace: destination.country
+      ? {
+          '@type': 'Country',
+          name: destination.country
+        }
+      : undefined,
+    subjectOf: {
+      '@type': 'ItemList',
+      name: `Reviewed hotels in ${destination.name}`,
+      itemListElement: hotels.map((hotel, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `https://theturndown.co/reviews/${hotel.slug}`,
+        name: hotel.name
+      }))
+    }
+  };
+
   return (
     <div className="flex w-full flex-col gap-16 pb-24">
+      <JsonLd data={jsonLd} />
       <div className="mx-auto w-full max-w-6xl px-6 pt-8">
         <Breadcrumbs
           items={[
@@ -63,7 +85,7 @@ export default async function DestinationPage({ params }: PageProps) {
       </section>
 
       <section className="body-max px-6">
-        <MarkdownContent content={destination.content_md} />
+        <MarkdownContent content={destination.content_md} demoteH1 />
       </section>
 
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6">

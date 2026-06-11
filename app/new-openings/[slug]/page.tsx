@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import MarkdownContent from '@/components/MarkdownContent';
-import { getArticleBySlug } from '@/lib/db';
+import { getArticleBySlugAndCategory } from '@/lib/db';
 
 export const dynamic = `force-dynamic`;
 
@@ -10,7 +11,7 @@ type PageProps = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const article = await getArticleBySlugAndCategory(slug, `new-openings`);
   if (!article) return { title: `New opening` };
   return {
     title: article.title,
@@ -28,14 +29,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function NewOpeningPage({ params }: PageProps) {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
-  if (!article) {
-    return (
-      <div className="mx-auto max-w-6xl px-6 py-24">
-        <p className="text-sm text-charcoal/60">Article not found.</p>
-      </div>
-    );
-  }
+  const article = await getArticleBySlugAndCategory(slug, `new-openings`);
+  if (!article) notFound();
 
   return (
     <div className="flex w-full flex-col gap-16 pb-24">
@@ -60,7 +55,7 @@ export default async function NewOpeningPage({ params }: PageProps) {
       </section>
 
       <section className="body-max px-6">
-        <MarkdownContent content={article.content_md} />
+        <MarkdownContent content={article.content_md} demoteH1 />
       </section>
     </div>
   );

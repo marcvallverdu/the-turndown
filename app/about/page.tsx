@@ -2,8 +2,20 @@ import { Metadata } from 'next';
 import MarkdownContent from '@/components/MarkdownContent';
 
 export const metadata: Metadata = {
-  title: 'About',
-  description: 'About The Turndown, the luxury hotel editorial.'
+  title: `About The Turndown`,
+  description: `About The Turndown, an editorial guide to luxury hotels, destination intelligence, and considered travel.`,
+  alternates: { canonical: `/about` },
+  openGraph: {
+    type: 'website',
+    url: `/about`,
+    title: `About The Turndown`,
+    description: `About The Turndown, an editorial guide to luxury hotels, destination intelligence, and considered travel.`
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `About The Turndown`,
+    description: `About The Turndown, an editorial guide to luxury hotels, destination intelligence, and considered travel.`
+  }
 };
 
 const content = `

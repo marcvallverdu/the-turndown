@@ -3,6 +3,12 @@ import { getAllBrands, getAllDestinations, getAllHotels, getArticlesForSitemap }
 
 export const dynamic = `force-dynamic`;
 
+const articleCategoryPaths: Record<string, string> = {
+  'the-details': 'the-details',
+  versus: 'versus',
+  'new-openings': 'new-openings'
+};
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [hotels, brands, destinations, articles] = await Promise.all([
     getAllHotels(),
@@ -12,17 +18,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
 
   const baseUrl = `https://theturndown.co`;
+  const now = new Date();
 
   return [
-    { url: baseUrl, lastModified: new Date() },
-    { url: `${baseUrl}/reviews`, lastModified: new Date() },
-    { url: `${baseUrl}/brands`, lastModified: new Date() },
-    { url: `${baseUrl}/destinations`, lastModified: new Date() },
-    { url: `${baseUrl}/the-details`, lastModified: new Date() },
-    { url: `${baseUrl}/versus`, lastModified: new Date() },
-    { url: `${baseUrl}/new-openings`, lastModified: new Date() },
-    { url: `${baseUrl}/about`, lastModified: new Date() },
-    { url: `${baseUrl}/newsletter`, lastModified: new Date() },
+    { url: baseUrl, lastModified: now },
+    { url: `${baseUrl}/reviews`, lastModified: now },
+    { url: `${baseUrl}/brands`, lastModified: now },
+    { url: `${baseUrl}/destinations`, lastModified: now },
+    { url: `${baseUrl}/the-details`, lastModified: now },
+    { url: `${baseUrl}/versus`, lastModified: now },
+    { url: `${baseUrl}/new-openings`, lastModified: now },
+    { url: `${baseUrl}/about`, lastModified: now },
+    { url: `${baseUrl}/newsletter`, lastModified: now },
     ...hotels.map((hotel) => ({
       url: `${baseUrl}/reviews/${hotel.slug}`,
       lastModified: new Date(hotel.updated_at || hotel.created_at)
@@ -36,8 +43,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(destination.updated_at || destination.created_at)
     })),
     ...articles.map((article) => ({
-      url: `${baseUrl}/${article.category}/${article.slug}`,
-      lastModified: new Date()
+      url: `${baseUrl}/${articleCategoryPaths[article.category]}/${article.slug}`,
+      lastModified: new Date(article.updated_at || article.created_at)
     }))
   ];
 }

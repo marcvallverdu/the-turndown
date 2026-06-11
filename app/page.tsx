@@ -1,10 +1,30 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import HeroImage from '@/components/HeroImage';
 import ReviewCard from '@/components/ReviewCard';
 import NewsletterSignup from '@/components/NewsletterSignup';
+import JsonLd from '@/components/JsonLd';
 import { getAllBrands, getFeaturedHotels, getLatestArticleByCategory, getLatestHotels } from '@/lib/db';
 
 export const dynamic = `force-dynamic`;
+
+export const metadata: Metadata = {
+  title: 'Luxury Hotel Reviews, Destination Guides & Brand Profiles',
+  description:
+    'The Turndown is a luxury hotel editorial with considered hotel reviews, brand profiles, destination guides, and opening notes for modern travelers.',
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    url: '/',
+    title: 'The Turndown',
+    description: 'Luxury hotel reviews, brand profiles, and destination guides with a magazine sensibility.'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'The Turndown',
+    description: 'Luxury hotel reviews, brand profiles, and destination guides.'
+  }
+};
 
 export default async function HomePage() {
   const [featuredHotels, latestReviews, latestEssay, brands] = await Promise.all([
@@ -19,8 +39,35 @@ export default async function HomePage() {
       ?.split(`\n`)
       .find((line: string) => line.trim() && !line.trim().startsWith(`#`) && !line.trim().startsWith(`##`)) || ``;
 
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'The Turndown',
+    url: 'https://theturndown.co',
+    description: 'Luxury hotel reviews, brand profiles, and destination guides with a magazine sensibility.',
+    publisher: {
+      '@type': 'Organization',
+      name: 'The Turndown',
+      url: 'https://theturndown.co'
+    }
+  };
+
+  const latestReviewsSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Latest luxury hotel reviews',
+    itemListElement: latestReviews.map((hotel, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: `https://theturndown.co/reviews/${hotel.slug}`,
+      name: hotel.name
+    }))
+  };
+
   return (
     <div className="flex w-full flex-col gap-16 pb-24">
+      <JsonLd data={websiteSchema} />
+      <JsonLd data={latestReviewsSchema} />
       {featured && (
         <section>
           <HeroImage

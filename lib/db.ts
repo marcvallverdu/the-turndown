@@ -166,6 +166,15 @@ export async function getArticleBySlug(slug: string) {
   return result.rows[0] as any | undefined;
 }
 
+export async function getArticleBySlugAndCategory(slug: string, category: string) {
+  await ensureSchema();
+  const result = await pool.query(
+    `SELECT * FROM articles WHERE slug = $1 AND category = $2 AND published = 1`,
+    [slug, category]
+  );
+  return result.rows[0] as any | undefined;
+}
+
 export async function getLatestArticleByCategory(category: string) {
   await ensureSchema();
   const result = await pool.query(
@@ -177,8 +186,13 @@ export async function getLatestArticleByCategory(category: string) {
 
 export async function getArticlesForSitemap() {
   await ensureSchema();
-  const result = await pool.query(`SELECT slug, category FROM articles WHERE published = 1`);
-  return result.rows as { slug: string; category: string }[];
+  const result = await pool.query(
+    `SELECT slug, category, created_at, updated_at
+     FROM articles
+     WHERE published = 1
+       AND category IN ('the-details', 'versus', 'new-openings')`
+  );
+  return result.rows as { slug: string; category: string; created_at: string; updated_at: string | null }[];
 }
 
 export async function insertNewsletterSubscriber(email: string) {

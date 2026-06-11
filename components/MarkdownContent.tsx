@@ -5,8 +5,14 @@ marked.setOptions({
   breaks: true
 });
 
-export default function MarkdownContent({ content }: { content?: string | null }) {
+type MarkdownContentProps = {
+  content?: string | null;
+  demoteH1?: boolean;
+};
+
+export default function MarkdownContent({ content, demoteH1 = false }: MarkdownContentProps) {
   if (!content) return null;
-  const html = marked.parse(content);
+  const markdown = demoteH1 ? content.replace(/^# /gm, '## ') : content;
+  const html = marked.parse(markdown);
   return <div className="prose-luxury" dangerouslySetInnerHTML={{ __html: html }} />;
 }

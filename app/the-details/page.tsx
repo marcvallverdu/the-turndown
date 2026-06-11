@@ -1,20 +1,52 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import JsonLd from '@/components/JsonLd';
 import { getArticlesByCategory } from '@/lib/db';
 
 export const dynamic = `force-dynamic`;
 
 export const metadata: Metadata = {
-  title: `The Details`,
-  description: `Long-form essays on luxury hotel culture, design, and hospitality.`
+  title: `The Details: Hotel Essays`,
+  description: `Long-form essays on luxury hotel culture, service, design, architecture, and the rituals that define a great stay.`,
+  alternates: { canonical: `/the-details` },
+  openGraph: {
+    type: 'website',
+    url: `/the-details`,
+    title: `The Details: Hotel Essays`,
+    description: `Long-form essays on luxury hotel culture, service, design, architecture, and the rituals that define a great stay.`
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `The Details: Hotel Essays`,
+    description: `Long-form essays on luxury hotel culture, service, design, architecture, and the rituals that define a great stay.`
+  }
 };
 
 export default async function TheDetailsPage() {
   const articles = await getArticlesByCategory(`the-details`);
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'The Details: Hotel Essays',
+    url: 'https://theturndown.co/the-details',
+    description: 'Long-form essays on luxury hotel culture, service, design, architecture, and the rituals that define a great stay.',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: articles.map((article, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `https://theturndown.co/the-details/${article.slug}`,
+        name: article.title
+      }))
+    }
+  };
+
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-24 pt-12">
+    <>
+      <JsonLd data={jsonLd} />
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-24 pt-12">
       <section>
         <p className="kicker">The Details</p>
         <h1 className="mt-4 font-serif text-5xl sm:text-6xl">Essays for the slow reader.</h1>
@@ -47,6 +79,7 @@ export default async function TheDetailsPage() {
           </Link>
         ))}
       </section>
-    </div>
+      </div>
+    </>
   );
 }

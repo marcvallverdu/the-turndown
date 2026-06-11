@@ -1,20 +1,52 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import JsonLd from '@/components/JsonLd';
 import { getAllDestinations } from '@/lib/db';
 
 export const dynamic = `force-dynamic`;
 
 export const metadata: Metadata = {
-  title: `Destinations`,
-  description: `Destination guides and hotel reviews across the world.`
+  title: `Luxury Hotel Destination Guides`,
+  description: `Destination guides for travelers seeking the world’s most considered luxury hotels, resorts, and city stays.`,
+  alternates: { canonical: `/destinations` },
+  openGraph: {
+    type: 'website',
+    url: `/destinations`,
+    title: `Luxury Hotel Destination Guides`,
+    description: `Destination guides for travelers seeking the world’s most considered luxury hotels, resorts, and city stays.`
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `Luxury Hotel Destination Guides`,
+    description: `Destination guides for travelers seeking the world’s most considered luxury hotels, resorts, and city stays.`
+  }
 };
 
 export default async function DestinationsPage() {
   const destinations = await getAllDestinations();
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Luxury Hotel Destination Guides',
+    url: 'https://theturndown.co/destinations',
+    description: 'Destination guides for travelers seeking the world’s most considered luxury hotels, resorts, and city stays.',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: destinations.map((destination, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `https://theturndown.co/destinations/${destination.slug}`,
+        name: destination.name
+      }))
+    }
+  };
+
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-24 pt-12">
+    <>
+      <JsonLd data={jsonLd} />
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-24 pt-12">
       <section>
         <p className="kicker">Destinations</p>
         <h1 className="mt-4 font-serif text-5xl sm:text-6xl">Where to spend the slow season.</h1>
@@ -47,6 +79,7 @@ export default async function DestinationsPage() {
           </Link>
         ))}
       </section>
-    </div>
+      </div>
+    </>
   );
 }

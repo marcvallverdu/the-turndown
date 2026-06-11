@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Cormorant_Garamond, Source_Serif_4 } from 'next/font/google';
-import Script from 'next/script';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -39,9 +38,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'The Turndown',
     description: 'Luxury hotel reviews, brand profiles, and destination guides.'
-  },
-  alternates: {
-    canonical: 'https://theturndown.co'
   }
 };
 
@@ -52,11 +48,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main className="min-h-screen bg-ivory bg-linen">{children}</main>
         <Footer />
-        <Script
-          src="https://example-analytics.com/script.js"
-          data-website-id="4ae0043f-c1ff-4b59-87e1-eae401e7ab66"
-          strategy="afterInteractive"
-        />
       </body>
     </html>
   );
