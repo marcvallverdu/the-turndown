@@ -23,6 +23,61 @@ export type HotelFilters = {
   maxPrice?: number;
 };
 
+type DestinationScope = {
+  clause: string;
+  values: string[];
+};
+
+const locationScopedDestinationPatterns: Record<string, string[]> = {
+  'amalfi-coast': ['%Amalfi%', '%Ravello%', '%Positano%'],
+  bali: ['%Bali%', '%Ubud%', '%Uluwatu%'],
+  'bora-bora': ['%Bora Bora%'],
+  capri: ['%Capri%'],
+  dubai: ['%Dubai%'],
+  'french-riviera': ['%French Riviera%', '%Saint-Tropez%', '%St-Tropez%', '%Cap-Ferrat%', '%Cannes%', '%Nice, France%'],
+  'italian-riviera': ['%Portofino%', '%Liguria%', '%Italian Riviera%'],
+  kyoto: ['%Kyoto%'],
+  'lake-como': ['%Lake Como%', '%Lago di Como%', '%Como%'],
+  london: ['%London%'],
+  mallorca: ['%Mallorca%'],
+  marrakech: ['%Marrakech%'],
+  'new-york': ['%New York%'],
+  paris: ['%Paris%'],
+  santorini: ['%Santorini%'],
+  sicily: ['%Sicily%', '%Taormina%', '%Noto%', '%Palermo%'],
+  singapore: ['%Singapore%'],
+  tokyo: ['%Tokyo%']
+};
+
+const regionScopedDestinations: Record<string, string> = {
+  caribbean: 'caribbean'
+};
+
+function destinationScope(destination: { name: string; country?: string; slug: string }, startIndex = 1): DestinationScope {
+  const locationPatterns = locationScopedDestinationPatterns[destination.slug];
+  if (locationPatterns?.length) {
+    return {
+      clause: `(${locationPatterns.map((_, index) => `location ILIKE $${startIndex + index}`).join(' OR ')})`,
+      values: locationPatterns
+    };
+  }
+
+  const regionSlug = regionScopedDestinations[destination.slug];
+  if (regionSlug) {
+    return {
+      clause: `region_slug = $${startIndex}`,
+      values: [regionSlug]
+    };
+  }
+
+  const country = destination.country || destination.name;
+  const countrySlug = country.toLowerCase().replace(/\s+/g, `-`);
+  return {
+    clause: `(country = $${startIndex} OR country_slug = $${startIndex + 1})`,
+    values: [country, countrySlug]
+  };
+}
+
 async function fetchDestinationBySlug(slug: string) {
   await ensureSchema();
   const result = await pool.query(`SELECT * FROM destinations WHERE slug = $1 AND published = 1`, [slug]);
@@ -48,15 +103,9 @@ async function fetchGetAllHotels(filters?: HotelFilters) {
   if (filters?.destinationSlug) {
     const destination = await fetchDestinationBySlug(filters.destinationSlug);
     if (destination) {
-      if ([`Tokyo`, `Paris`, `Bora Bora`].includes(destination.name)) {
-        params.push(`%${destination.name}%`);
-        query += ` AND location LIKE $${params.length}`;
-      } else {
-        const country = destination.country || destination.name;
-        const countrySlug = country.toLowerCase().replace(/\s+/g, `-`);
-        params.push(destination.name, countrySlug);
-        query += ` AND (country = $${params.length - 1} OR country_slug = $${params.length})`;
-      }
+      const scope = destinationScope(destination as { name: string; country?: string; slug: string }, params.length + 1);
+      params.push(...scope.values);
+      query += ` AND ${scope.clause}`;
     }
   }
 
@@ -137,18 +186,10 @@ async function fetchGetDestinationBySlug(slug: string) {
 
 async function fetchGetHotelsForDestination(destination: { name: string; country?: string; slug: string }) {
   await ensureSchema();
-  if ([`Tokyo`, `Paris`, `Bora Bora`].includes(destination.name)) {
-    const result = await pool.query(
-      `SELECT * FROM hotels WHERE location LIKE $1 AND published = 1 ORDER BY created_at DESC`,
-      [`%${destination.name}%`]
-    );
-    return result.rows as any[];
-  }
-
-  const country = destination.country || destination.name;
+  const scope = destinationScope(destination);
   const result = await pool.query(
-    `SELECT * FROM hotels WHERE country = $1 AND published = 1 ORDER BY created_at DESC`,
-    [country]
+    `SELECT * FROM hotels WHERE ${scope.clause} AND published = 1 ORDER BY created_at DESC`,
+    scope.values
   );
   return result.rows as any[];
 }

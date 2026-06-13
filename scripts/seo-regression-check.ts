@@ -52,6 +52,13 @@ for (const [route, category] of [
   assert(source.includes(category), `${route} should keep the expected category`);
 }
 
+const dbHelpers = read('lib/db.ts');
+for (const scopedDestination of ['lake-como', 'santorini', 'bali', 'italian-riviera', 'caribbean']) {
+  assert(dbHelpers.includes(scopedDestination), `destination hotel queries should scope ${scopedDestination} before rendering best-hotel hubs`);
+}
+assert(dbHelpers.includes('location ILIKE'), 'subdestination hotel queries should match hotel location, not only country');
+assert(dbHelpers.includes('region_slug ='), 'regional destination hotel queries should support region-scoped hubs');
+
 const seoHelpers = read('lib/seo.ts');
 assert(seoHelpers.includes("'@type': 'Article'"), 'articleJsonLd helper should emit Article schema');
 assert(seoHelpers.includes('datePublished') && seoHelpers.includes('dateModified'), 'articleJsonLd helper should include Article dates');
