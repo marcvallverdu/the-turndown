@@ -9,6 +9,7 @@
     "seed": "tsx scripts/seed.ts",
     "test:seo": "tsx scripts/seo-regression-check.ts",
     "lint": "next lint",
+    "test:homepage": "tsx tests/homepage.test.ts",
     "test:newsletter": "tsx tests/newsletter.test.ts"
   },
   "dependencies": {

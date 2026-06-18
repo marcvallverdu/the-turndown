@@ -70,6 +70,40 @@ export default async function HomePage() {
     <div className="flex w-full flex-col gap-16 pb-24">
       <JsonLd data={websiteSchema} />
       <JsonLd data={latestReviewsSchema} />
+
+      <section className="mx-auto grid w-full max-w-6xl gap-10 px-6 pt-14 sm:pt-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+        <div className="max-w-3xl">
+          <p className="kicker">Luxury hotel editorial</p>
+          <h1 className="mt-5 font-serif text-5xl leading-[0.95] tracking-tight text-charcoal sm:text-6xl md:text-7xl">
+            An independent guide to hotels worth planning around.
+          </h1>
+          <p className="mt-6 max-w-2xl text-base leading-relaxed text-charcoal/72 sm:text-lg">
+            The Turndown publishes considered hotel reviews, brand profiles, destination guides, and opening notes for travelers who care about the stay as much as the trip.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Link
+              href="/reviews"
+              className="inline-flex justify-center border border-charcoal px-5 py-3 text-[0.65rem] uppercase tracking-[0.35em] hover:border-gold hover:text-gold"
+            >
+              Read reviews
+            </Link>
+            <Link
+              href="/about"
+              className="inline-flex justify-center border-b border-charcoal/60 pb-2 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/70 hover:border-gold hover:text-gold"
+            >
+              What is The Turndown?
+            </Link>
+          </div>
+        </div>
+        <div className="border border-mist bg-white/55 p-6 shadow-[0_24px_80px_rgba(26,26,26,0.06)] sm:p-8">
+          <NewsletterSignup
+            title="Get the next check-in"
+            subtitle="A quiet dispatch of new reviews, opening notes, and hotel details worth saving before your next trip."
+            compact
+          />
+        </div>
+      </section>
+
       {featured && (
         <section>
           <HeroImage
