@@ -1,0 +1,16 @@
+{
+  "domain": "https://theturndown.co",
+  "stack": "Next.js App Router + Postgres seed scripts",
+  "contentSurface": "Luxury hotel reviews, destination/brand hubs, versus pages, best-hotel hubs, newsletter",
+  "outputPaths": {
+    "seedScripts": "scripts/seed-*.ts",
+    "routes": "app/**/page.tsx",
+    "plan": "CONTENT_PLAN.md",
+    "publishingSchedule": "/Users/marcvallverdu/clawd/obsidian-vault/01-Projects/the-turndown/publishing-schedule.md"
+  },
+  "validationCommands": [
+    "npm run test:seo",
+    "npm run build"
+  ],
+  "notes": "Weekly growth loop should score refresh/internal-link/trust/technical opportunities before adding new content."
+}

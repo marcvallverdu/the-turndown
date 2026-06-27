@@ -1,0 +1,12 @@
+{
+  "updatedAt": "2026-06-27",
+  "notes": "No paid keyword tool available in cron. Scores use publishing schedule intent, live SERP pattern checks, existing route inventory, and internal-link fit.",
+  "candidates": [
+    {
+      "query": "aman kyoto vs four seasons kyoto",
+      "intent": "comparison / booking decision",
+      "evidence": "SERP contains individual luxury-hotel reviews and Kyoto luxury comparison content; site has both underlying reviews.",
+      "priority": "high"
+    }
+  ]
+}

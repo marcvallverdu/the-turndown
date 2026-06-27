@@ -160,6 +160,18 @@ async function fetchGetHotelsByRegion(regionSlug: string, limit = 3) {
   return result.rows as any[];
 }
 
+async function fetchGetHotelsBySlugs(slugs: string[]) {
+  await ensureSchema();
+  if (!slugs.length) return [];
+  const result = await pool.query(
+    `SELECT * FROM hotels
+     WHERE slug = ANY($1::text[]) AND published = 1
+     ORDER BY array_position($1::text[], slug)`,
+    [slugs]
+  );
+  return result.rows as any[];
+}
+
 async function fetchGetAllBrands() {
   await ensureSchema();
   const result = await pool.query(`SELECT * FROM brands WHERE published = 1 ORDER BY name`);
@@ -247,6 +259,7 @@ export const getLatestHotels = unstable_cache(fetchGetLatestHotels, ['getLatestH
 export const getFeaturedHotels = unstable_cache(fetchGetFeaturedHotels, ['getFeaturedHotels'], cacheOptions);
 export const getHotelsByBrand = unstable_cache(fetchGetHotelsByBrand, ['getHotelsByBrand'], cacheOptions);
 export const getHotelsByRegion = unstable_cache(fetchGetHotelsByRegion, ['getHotelsByRegion'], cacheOptions);
+export const getHotelsBySlugs = unstable_cache(fetchGetHotelsBySlugs, ['getHotelsBySlugs'], cacheOptions);
 export const getAllBrands = unstable_cache(fetchGetAllBrands, ['getAllBrands'], cacheOptions);
 export const getBrandBySlug = unstable_cache(fetchGetBrandBySlug, ['getBrandBySlug'], cacheOptions);
 export const getAllDestinations = unstable_cache(fetchGetAllDestinations, ['getAllDestinations'], cacheOptions);
