@@ -58,7 +58,11 @@ echo "Running $seed_file in production app container $app_container..."
 docker exec "$app_container" sh -lc "npx tsx \"$seed_file\""
 
 echo "Verifying slug in production database..."
-row="$(docker exec "$db_container" psql -U "$db_user" -d "$db_name" -tAc "select slug || chr(9) || name || chr(9) || published from ${verify_table} where slug = '$expected_slug';")"
+case "$verify_table" in
+  articles) label_column="title" ;;
+  *) label_column="name" ;;
+esac
+row="$(docker exec "$db_container" psql -U "$db_user" -d "$db_name" -tAc "select slug || chr(9) || ${label_column} || chr(9) || published from ${verify_table} where slug = '$expected_slug';")"
 if [[ -z "$row" ]]; then
   echo "Verification failed: slug $expected_slug not found in production ${verify_table} table." >&2
   exit 1
