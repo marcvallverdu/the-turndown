@@ -15,12 +15,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const destination = await getDestinationBySlug(slug);
   if (!destination) return { title: `Destination` };
+  const hotels = await getHotelsForDestination(destination);
   return {
     title: `${destination.name} Luxury Hotel Guide`,
     description: destination.intro_md,
     alternates: {
       canonical: `https://theturndown.co/destinations/${destination.slug}`
     },
+    robots: hotels.length ? { index: true, follow: true } : { index: false, follow: true },
     openGraph: {
       title: `${destination.name} Luxury Hotel Guide`,
       description: destination.intro_md,

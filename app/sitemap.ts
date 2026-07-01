@@ -1,6 +1,13 @@
 import type { MetadataRoute } from 'next';
 import { connection } from 'next/server';
-import { getAllBrands, getAllDestinations, getAllHotels, getArticlesForSitemap, getHotelsForDestination } from '@/lib/db';
+import {
+  getAllBrands,
+  getAllDestinations,
+  getAllHotels,
+  getArticlesForSitemap,
+  getHotelsByBrand,
+  getHotelsForDestination
+} from '@/lib/db';
 
 export const revalidate = 3600;
 
@@ -20,14 +27,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getArticlesForSitemap()
   ]);
 
-  const destinationsWithLandingPages = (
-    await Promise.all(
+  const [brandRows, destinationRows] = await Promise.all([
+    Promise.all(
+      brands.map(async (brand) => ({
+        brand,
+        hotels: await getHotelsByBrand(brand.slug)
+      }))
+    ),
+    Promise.all(
       destinations.map(async (destination) => ({
         destination,
         hotels: await getHotelsForDestination(destination)
       }))
     )
-  ).filter(({ hotels }) => hotels.length >= 2);
+  ]);
+
+  const brandsWithReviewedHotels = brandRows.filter(({ hotels }) => hotels.length > 0);
+  const destinationsWithReviewedHotels = destinationRows.filter(({ hotels }) => hotels.length > 0);
+  const destinationsWithLandingPages = destinationRows.filter(({ hotels }) => hotels.length >= 2);
 
   const baseUrl = `https://theturndown.co`;
 
@@ -46,11 +63,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/reviews/${hotel.slug}`,
       lastModified: new Date(hotel.updated_at || hotel.created_at)
     })),
-    ...brands.map((brand) => ({
+    ...brandsWithReviewedHotels.map(({ brand }) => ({
       url: `${baseUrl}/brands/${brand.slug}`,
       lastModified: new Date(brand.updated_at || brand.created_at)
     })),
-    ...destinations.map((destination) => ({
+    ...destinationsWithReviewedHotels.map(({ destination }) => ({
       url: `${baseUrl}/destinations/${destination.slug}`,
       lastModified: new Date(destination.updated_at || destination.created_at)
     })),

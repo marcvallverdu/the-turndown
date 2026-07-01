@@ -69,8 +69,13 @@ assert(seoHelpers.includes('BreadcrumbList'), 'breadcrumb helper should emit Bre
 
 const brandDetail = read('app/brands/[slug]/page.tsx');
 assert(brandDetail.includes('rel="noopener noreferrer"'), 'brand external link should use noopener noreferrer');
+assert(brandDetail.includes('getHotelsByBrand') && brandDetail.includes('index: false'), 'brand detail pages with no reviewed hotels should be noindex');
+
+const destinationDetail = read('app/destinations/[slug]/page.tsx');
+assert(destinationDetail.includes('getHotelsForDestination') && destinationDetail.includes('index: false'), 'destination detail pages with no reviewed hotels should be noindex');
 
 const sitemap = read('app/sitemap.ts');
 assert(!sitemap.includes('const now = new Date()'), 'sitemap should not stamp every hub URL with the current request time');
+assert(sitemap.includes('brandsWithReviewedHotels') && sitemap.includes('destinationsWithReviewedHotels'), 'sitemap should exclude brand and destination pages without reviewed hotels');
 
 console.log('SEO regression checks passed');

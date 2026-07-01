@@ -15,12 +15,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const brand = await getBrandBySlug(slug);
   if (!brand) return { title: `Brand` };
+  const hotels = await getHotelsByBrand(brand.slug);
   return {
     title: `${brand.name} Hotels: Brand Guide & Best Properties`,
     description: brand.tagline,
     alternates: {
       canonical: `https://theturndown.co/brands/${brand.slug}`
     },
+    robots: hotels.length ? { index: true, follow: true } : { index: false, follow: true },
     openGraph: {
       title: `${brand.name} Hotels: Brand Guide & Best Properties`,
       description: brand.tagline,
