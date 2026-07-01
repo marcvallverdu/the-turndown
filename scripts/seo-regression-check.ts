@@ -29,6 +29,7 @@ for (const route of routes) {
 
 const layout = read('app/layout.tsx');
 assert(layout.includes('DEFAULT_OG_IMAGE'), 'layout should expose a default OG image');
+assert(layout.includes("'application/rss+xml': '/rss.xml'"), 'root metadata should expose the RSS feed as an alternate discovery surface');
 
 const reviewsIndex = read('app/reviews/page.tsx');
 assert(reviewsIndex.includes('generateMetadata'), 'reviews index should generate metadata from search params');
@@ -77,5 +78,9 @@ assert(destinationDetail.includes('getHotelsForDestination') && destinationDetai
 const sitemap = read('app/sitemap.ts');
 assert(!sitemap.includes('const now = new Date()'), 'sitemap should not stamp every hub URL with the current request time');
 assert(sitemap.includes('brandsWithReviewedHotels') && sitemap.includes('destinationsWithReviewedHotels'), 'sitemap should exclude brand and destination pages without reviewed hotels');
+
+const rssRoute = read('app/rss.xml/route.ts');
+assert(rssRoute.includes('application/rss+xml'), 'RSS route should return an RSS content type');
+assert(rssRoute.includes('getRecentNewsletterArticles'), 'RSS route should be backed by recent published articles');
 
 console.log('SEO regression checks passed');

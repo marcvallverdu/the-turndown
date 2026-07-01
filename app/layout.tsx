@@ -27,6 +27,11 @@ export const metadata: Metadata = {
   },
   description:
     'The Turndown is a luxury hotel editorial, delivering considered reviews, brand profiles, and destination guides for modern travelers.',
+  alternates: {
+    types: {
+      'application/rss+xml': '/rss.xml'
+    }
+  },
   openGraph: {
     type: 'website',
     title: 'The Turndown',
