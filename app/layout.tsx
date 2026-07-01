@@ -59,6 +59,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${cormorant.variable} ${sourceSerif.variable}`}>
+      <head>
+        <link rel="alternate" type="application/rss+xml" href="/rss.xml" />
+      </head>
       <body>
         <Header />
         <main className="min-h-screen bg-ivory bg-linen">{children}</main>

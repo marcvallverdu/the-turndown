@@ -30,6 +30,7 @@ for (const route of routes) {
 const layout = read('app/layout.tsx');
 assert(layout.includes('DEFAULT_OG_IMAGE'), 'layout should expose a default OG image');
 assert(layout.includes("'application/rss+xml': '/rss.xml'"), 'root metadata should expose the RSS feed as an alternate discovery surface');
+assert(layout.includes('rel="alternate" type="application/rss+xml" href="/rss.xml"'), 'root layout should render a durable RSS alternate link');
 
 const reviewsIndex = read('app/reviews/page.tsx');
 assert(reviewsIndex.includes('generateMetadata'), 'reviews index should generate metadata from search params');
