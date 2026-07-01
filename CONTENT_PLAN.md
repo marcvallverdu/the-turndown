@@ -2,6 +2,31 @@
 
 The Turndown is a luxury-hotel editorial and curation site. Treat it as a loop-based growth system, not a generic article generator.
 
+## Content-source guard
+
+This file is The Turndown publishing plan. It must never be reused from, or rewritten with, another site's content plan.
+
+Before publishing, committing, or running an agentic content/SEO loop, verify:
+
+- repo/workdir is `/Users/marcvallverdu/projects/the-turndown`;
+- production site is `https://theturndown.co`;
+- this plan describes luxury hotel reviews, destinations, brand profiles, best-hotel pages, versus pages, new openings, hotel-design/editorial essays, and newsletter routing;
+- there are no references to BestStaycations/staycations, PolarTourist/polar travel, DoubleSave coupon/RLP strategy, DescuentosParaMedicos healthcare discounts, ProductPeople jobs, FindOperators operator hiring, or ManorFarms rural property listings unless explicitly cited as an external comparison.
+
+If this guard fails, stop the run, repair `CONTENT_PLAN.md` from The Turndown repo/vault context, and do not publish content from the wrong site plan.
+
+## Current SEO research anchors
+
+Source material: Obsidian `01-Projects/the-turndown/content-plan.md`, `publishing-schedule.md`, repo hotel/destination/brand/review data, and live SERP checks.
+
+Priority keyword/intent clusters:
+
+1. Destination best-hotel intent: `best hotels London`, `best hotels Dubai`, `best hotels Bali`, `best hotels New York`, `best hotels Singapore`, `best hotels Greece`, `best hotels Maldives`, `best hotels Tokyo`, `best hotels Lake Como`.
+2. Brand profile intent: `Peninsula hotels`, `Raffles hotels`, `Nobu hotel`, `Taj hotels`, `Bulgari hotel`, `Cheval Blanc`, plus existing Aman/Four Seasons/Six Senses/Belmond/Rosewood/Shangri-La coverage.
+3. Roundup/editorial intent: `best hotels in the world`, `best luxury hotels London`, `best spa hotels Europe`, `best hotels Europe`.
+4. Versus intent: `Claridge's vs The Connaught`, `Raffles Singapore vs Mandarin Oriental Singapore`, `Bulgari London vs Rosewood London`, `Aman New York vs The Mark`.
+5. New opening/review intent: hotel-specific review/opening pages only when claims can be sourced and no fake firsthand stay is implied.
+
 ## Operating principle
 
 Each weekly run should improve the usefulness, trust, discoverability, or retention value of the site. New content is one possible move, not the default answer.
