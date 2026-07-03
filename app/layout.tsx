@@ -28,9 +28,18 @@ export const metadata: Metadata = {
   description:
     'The Turndown is a luxury hotel editorial, delivering considered reviews, brand profiles, and destination guides for modern travelers.',
   alternates: {
+    canonical: '/',
     types: {
       'application/rss+xml': '/rss.xml'
     }
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' }
+    ],
+    apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }]
   },
   openGraph: {
     type: 'website',
