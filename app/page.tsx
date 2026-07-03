@@ -1,3 +1,4 @@
+import { DEFAULT_OG_IMAGE } from '@/lib/seo';
 import { connection } from 'next/server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -18,12 +19,21 @@ export const metadata: Metadata = {
     type: 'website',
     url: '/',
     title: 'The Turndown',
-    description: 'Luxury hotel reviews, brand profiles, and destination guides with a magazine sensibility.'
+    description: 'Luxury hotel reviews, brand profiles, and destination guides with a magazine sensibility.',
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: 'The Turndown luxury hotel editorial'
+      }
+    ]
   },
   twitter: {
     card: 'summary_large_image',
     title: 'The Turndown',
-    description: 'Luxury hotel reviews, brand profiles, and destination guides.'
+    description: 'Luxury hotel reviews, brand profiles, and destination guides.',
+    images: [DEFAULT_OG_IMAGE]
   }
 };
 
