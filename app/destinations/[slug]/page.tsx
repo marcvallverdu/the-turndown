@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import MarkdownContent from '@/components/MarkdownContent';
 import ReviewCard from '@/components/ReviewCard';
@@ -10,6 +11,12 @@ import { getDestinationBySlug, getHotelsForDestination } from '@/lib/db';
 export const revalidate = 3600;
 
 type PageProps = { params: Promise<{ slug: string }> };
+
+const priorityDestinationSearches = [
+  { slug: 'santorini', label: 'Best luxury hotels in Santorini', reason: 'high-intent Greek-island hotel searches' },
+  { slug: 'morocco', label: 'Best luxury hotels in Morocco', reason: 'resort, riad and desert-trip planning intent' },
+  { slug: 'london', label: 'Best luxury hotels in London', reason: 'decision-stage city hotel intent' }
+];
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -89,6 +96,23 @@ export default async function DestinationPage({ params }: PageProps) {
 
       <section className="body-max px-6">
         <MarkdownContent content={destination.content_md} demoteH1 />
+      </section>
+
+      <section className="body-max px-6">
+        <div className="section-rule" />
+        <p className="kicker mt-6">Search guides</p>
+        <h2 className="mt-4 font-serif text-3xl">Shortlists worth opening next</h2>
+        <div className="mt-6 grid gap-3 md:grid-cols-3">
+          <Link href={`/best-luxury-hotels/${destination.slug}`} className="border border-charcoal/10 p-4 text-sm transition hover:border-gold/60 hover:text-gold">
+            Best luxury hotels in {destination.name}
+          </Link>
+          {priorityDestinationSearches.filter((item) => item.slug !== destination.slug).slice(0, 2).map((item) => (
+            <Link key={item.slug} href={`/best-luxury-hotels/${item.slug}`} className="border border-charcoal/10 p-4 transition hover:border-gold/60">
+              <span className="block text-sm hover:text-gold">{item.label}</span>
+              <span className="mt-2 block text-xs leading-5 text-charcoal/55">{item.reason}</span>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6">

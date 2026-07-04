@@ -242,12 +242,12 @@ export default async function ReviewPage({ params }: PageProps) {
             Official site
           </a>
           <a
-            href={hotel.booking_url}
+            href={hotel.website}
             target="_blank"
             rel="sponsored nofollow noopener noreferrer"
             className="border-b border-charcoal/70 pb-2 hover:border-gold hover:text-gold"
           >
-            Booking link
+            Check dates with the hotel
           </a>
         </div>
       </section>

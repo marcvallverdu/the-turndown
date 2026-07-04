@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import MarkdownContent from '@/components/MarkdownContent';
 import ReviewCard from '@/components/ReviewCard';
@@ -10,6 +11,20 @@ import { getBrandBySlug, getHotelsByBrand } from '@/lib/db';
 export const revalidate = 3600;
 
 type PageProps = { params: Promise<{ slug: string }> };
+
+const priorityBrandLinks = [
+  { slug: 'aman', label: 'Aman', note: 'quiet-luxury resorts and city sanctuaries' },
+  { slug: 'belmond', label: 'Belmond', note: 'trains, retreats and grand European hotels' },
+  { slug: 'capella', label: 'Capella', note: 'smaller luxury hotels with strong service reputations' },
+  { slug: 'nobu', label: 'Nobu', note: 'restaurant-led hotels and city stays' },
+  { slug: 'one-and-only', label: 'One&Only', note: 'resort-led luxury in beach and city destinations' }
+];
+
+const prioritySearchGuides = [
+  { href: '/best-luxury-hotels/santorini', label: 'Best luxury hotels in Santorini' },
+  { href: '/best-luxury-hotels/morocco', label: 'Best luxury hotels in Morocco' },
+  { href: '/best-luxury-hotels/london', label: 'Best luxury hotels in London' }
+];
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -110,6 +125,34 @@ export default async function BrandPage({ params }: PageProps) {
 
       <section className="body-max px-6">
         <MarkdownContent content={brand.content_md} demoteH1 />
+      </section>
+
+      <section className="body-max px-6">
+        <div className="section-rule" />
+        <p className="kicker mt-6">Keep comparing</p>
+        <div className="mt-6 grid gap-6 md:grid-cols-2">
+          <div>
+            <h2 className="font-serif text-2xl">Related luxury hotel brands</h2>
+            <div className="mt-4 grid gap-3">
+              {priorityBrandLinks.filter((item) => item.slug !== brand.slug).map((item) => (
+                <Link key={item.slug} href={`/brands/${item.slug}`} className="group border border-charcoal/10 p-4 transition hover:border-gold/60">
+                  <span className="block font-serif text-xl group-hover:text-gold">{item.label}</span>
+                  <span className="mt-1 block text-xs leading-6 text-charcoal/60">{item.note}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h2 className="font-serif text-2xl">Popular hotel shortlists</h2>
+            <div className="mt-4 grid gap-3">
+              {prioritySearchGuides.map((item) => (
+                <Link key={item.href} href={item.href} className="border border-charcoal/10 p-4 text-sm transition hover:border-gold/60 hover:text-gold">
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6">
