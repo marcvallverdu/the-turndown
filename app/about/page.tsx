@@ -38,7 +38,7 @@ The Turndown evaluates hotels on rooms, service, food, atmosphere, design, and t
 
 ## Contact
 
-For editorial partnerships and press inquiries: hello@theturndown.co
+For editorial partnerships and press inquiries: hello [at] theturndown.co
 `;
 
 export default function AboutPage() {
