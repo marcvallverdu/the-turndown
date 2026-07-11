@@ -34,3 +34,22 @@ Il San Pietro di Positano review, unless a live SEO check shows Bangkok or Kyoto
 
 ### Next best candidate
 Mandarin Oriental brand profile, with internal links to `/reviews/mandarin-oriental-bangkok`, `/destinations/bangkok` if shipped, and relevant riverside Bangkok comparison context.
+
+
+## 2026-07-11 weekly growth loop
+
+### Candidates scored
+| Candidate | Type | Score | Notes |
+| --- | --- | ---: | --- |
+| Mandarin Oriental brand profile | Brand profile | 90 | Active queue item, brand-demand intent, two reviewed Mandarin Oriental properties already live, and direct links into Bangkok/Lake Como review inventory. |
+| Brand page signature-property link | Internal-link/trust improvement | 84 | Small route/template improvement that turns raw `best_property` slugs into reader-facing review links across all brand pages. |
+| Four Seasons Hotel George V, Paris | Hotel review | 78 | Strong queued review, but scheduled next and less connected to this week's existing brand/linking gap. |
+| Bangkok destination guide | Destination guide | 76 | Clear search intent and Capella/Mandarin Oriental inventory, but `/best-luxury-hotels/bangkok` is not yet sitemap-backed and the destination needs more local coverage. |
+| Best luxury hotels hub decision copy | Template refresh | 70 | Useful, but lower leverage than publishing a missing brand page and improving brand-page link routing. |
+
+### Shipped
+- `/brands/mandarin-oriental` — queued brand profile seeded via `scripts/seed-jul11.ts` once deployed/seeding runs.
+- Brand detail pages now link the signature property field to the matching review page when the reviewed hotel exists.
+
+### Next best candidate
+Four Seasons Hotel George V, Paris review, unless the next live SEO check shows the Bangkok destination guide has enough reviewed inventory to justify destination + best-hotel hub expansion.

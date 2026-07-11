@@ -6,7 +6,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import MarkdownContent from '@/components/MarkdownContent';
 import ReviewCard from '@/components/ReviewCard';
 import JsonLd from '@/components/JsonLd';
-import { getBrandBySlug, getHotelsByBrand } from '@/lib/db';
+import { getBrandBySlug, getHotelBySlug, getHotelsByBrand } from '@/lib/db';
 
 export const revalidate = 3600;
 
@@ -52,6 +52,8 @@ export default async function BrandPage({ params }: PageProps) {
   if (!brand) notFound();
 
   const hotels = await getHotelsByBrand(brand.slug);
+  const signatureHotel = brand.best_property ? await getHotelBySlug(brand.best_property) : null;
+  const signatureLabel = signatureHotel?.name || String(brand.best_property || '').replace(/-/g, ' ');
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -108,9 +110,15 @@ export default async function BrandPage({ params }: PageProps) {
             <span>Parent</span>
             <span>{brand.parent_company}</span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-6">
             <span>Signature property</span>
-            <span>{brand.best_property}</span>
+            {signatureHotel ? (
+              <Link href={`/reviews/${signatureHotel.slug}`} className="text-right underline decoration-charcoal/30 underline-offset-4 hover:text-gold hover:decoration-gold">
+                {signatureLabel}
+              </Link>
+            ) : (
+              <span className="text-right capitalize">{signatureLabel}</span>
+            )}
           </div>
         </div>
         <a
