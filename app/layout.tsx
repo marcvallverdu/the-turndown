@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Cormorant_Garamond, Source_Serif_4 } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -75,6 +76,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main className="min-h-screen bg-ivory bg-linen">{children}</main>
         <Footer />
+        <Script
+          defer
+          src="https://dashboard.remarcablevc.com/script.js"
+          data-website-id="4ae0043f-c1ff-4b59-87e1-eae401e7ab66"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
