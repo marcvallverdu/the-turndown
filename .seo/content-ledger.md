@@ -53,3 +53,20 @@ Mandarin Oriental brand profile, with internal links to `/reviews/mandarin-orien
 
 ### Next best candidate
 Four Seasons Hotel George V, Paris review, unless the next live SEO check shows the Bangkok destination guide has enough reviewed inventory to justify destination + best-hotel hub expansion.
+
+## 2026-07-18 weekly growth loop
+
+### Candidates scored
+| Candidate | Type | Score | Notes |
+| --- | --- | ---: | --- |
+| Four Seasons Hotel George V, Paris | Hotel review | 91 | Active queue item, clear hotel-review intent, strong Four Seasons/Paris internal-link fit, and official sources support rooms, spa, location, and 2026 Michelin dining claims. |
+| Bangkok destination guide | Destination guide | 82 | High destination intent and existing Bangkok inventory, but stronger after one more Bangkok hotel or a best-hotel hub pass; not forced as a second item. |
+| Maybourne brand profile | Brand profile | 79 | Queue item with The Connaught/The Berkeley inventory, but scheduled later and lower immediate search fit than George V this week. |
+| Best luxury hotels hub decision copy | Template refresh | 74 | Useful future route-class improvement, but needs broader build/visual QA and is less urgent than the active missing review. |
+| Review-page newsletter routing | Conversion/internal-link improvement | 70 | Sensible sitewide improvement, but not bundled because the review publication already has clear value and local production DB access is currently unavailable. |
+
+### Shipped
+- `/reviews/four-seasons-george-v-paris` — queued Paris Palace hotel review committed as `scripts/seed-jul18.ts`; production seeding is expected after deployment because local Postgres is not available in this cron environment.
+
+### Next best candidate
+Bangkok destination guide, with a careful inventory check for `/reviews/capella-bangkok`, `/reviews/mandarin-oriental-bangkok`, and any existing Four Seasons/Peninsula/Rosewood Bangkok coverage before deciding whether to publish the destination page alone or pair it with a best-luxury-hotels hub refresh.
