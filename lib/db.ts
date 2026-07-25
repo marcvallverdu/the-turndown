@@ -31,6 +31,7 @@ type DestinationScope = {
 const locationScopedDestinationPatterns: Record<string, string[]> = {
   'amalfi-coast': ['%Amalfi%', '%Ravello%', '%Positano%'],
   bali: ['%Bali%', '%Ubud%', '%Uluwatu%'],
+  bangkok: ['%Bangkok%'],
   'bora-bora': ['%Bora Bora%'],
   capri: ['%Capri%'],
   dubai: ['%Dubai%'],

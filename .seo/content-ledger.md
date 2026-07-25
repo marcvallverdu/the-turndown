@@ -70,3 +70,21 @@ Four Seasons Hotel George V, Paris review, unless the next live SEO check shows 
 
 ### Next best candidate
 Bangkok destination guide, with a careful inventory check for `/reviews/capella-bangkok`, `/reviews/mandarin-oriental-bangkok`, and any existing Four Seasons/Peninsula/Rosewood Bangkok coverage before deciding whether to publish the destination page alone or pair it with a best-luxury-hotels hub refresh.
+
+## 2026-07-25 weekly growth loop
+
+### Candidates scored
+| Candidate | Type | Score | Notes |
+| --- | --- | ---: | --- |
+| Bangkok destination guide + Bangkok destination scoping | Destination guide / technical SEO | 92 | Active queue item, live `/destinations/bangkok` and `/best-luxury-hotels/bangkok` returned 404, two Bangkok reviews already live, and `lib/db.ts` needed a Bangkok-specific scope so city pages do not pull every Thailand hotel. |
+| Maybourne brand profile | Brand profile | 81 | Strong queued brand intent with The Connaught/The Berkeley inventory, but lower immediate route gap than Bangkok because the live city destination and best-hotel routes were absent. |
+| Best luxury hotels hub trust/decision copy | Route-class refresh | 76 | Useful future improvement, but the Bangkok scoped landing-page fix creates a new high-intent hub and improves sitemap eligibility at the same time. |
+| Best new luxury hotels in Paris | New-opening roundup | 74 | Good queued freshness topic, but needs more source verification and comes after the missing Bangkok destination in the active schedule. |
+| Review-page newsletter routing | Conversion/internal-link improvement | 70 | Useful sitewide conversion work, but less urgent than repairing a concrete destination/search-demand gap. |
+
+### Shipped
+- `/destinations/bangkok` — queued Bangkok destination guide committed as `scripts/seed-jul25.ts`; production seeding is expected after deployment because local Postgres is not available in this cron environment.
+- `/best-luxury-hotels/bangkok` — made safe/index-worthy by adding a Bangkok-specific destination scope, so it should list Bangkok reviews only instead of falling back to all Thailand hotels.
+
+### Next best candidate
+Maybourne brand profile, unless a live post-deploy check shows Bangkok needs an additional supporting review or a richer best-luxury-hotels template pass before moving to the next queued brand.
