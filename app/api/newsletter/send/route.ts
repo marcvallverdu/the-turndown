@@ -5,8 +5,14 @@ import {
   getRecentNewsletterArticles,
   recordNewsletterSend
 } from '@/lib/db';
-import { buildNewsletterHtml, buildNewsletterIssue, buildNewsletterText, selectUnsentArticles } from '@/lib/newsletter';
-import { sendNewsletterBatch } from '@/lib/email';
+import {
+  buildNewsletterHtml,
+  buildNewsletterIssue,
+  buildNewsletterText,
+  mergeNewsletterRecipients,
+  selectUnsentArticles
+} from '@/lib/newsletter';
+import { listNewsletterAudienceContacts, sendNewsletterBatch } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,11 +41,13 @@ export async function POST(request: Request) {
     const dryRun = Boolean(body?.dryRun);
     const maxArticles = Number(body?.maxArticles || 5);
 
-    const [articles, sendLogs, subscribers] = await Promise.all([
+    const [articles, sendLogs, databaseSubscribers, audienceContacts] = await Promise.all([
       getRecentNewsletterArticles(16),
       getNewsletterSendLogs(),
-      getConfirmedNewsletterSubscribers()
+      getConfirmedNewsletterSubscribers(),
+      listNewsletterAudienceContacts()
     ]);
+    const subscribers = mergeNewsletterRecipients(databaseSubscribers, audienceContacts);
 
     const selectedArticles = selectUnsentArticles(articles, sendLogs, maxArticles);
     if (selectedArticles.length === 0) {

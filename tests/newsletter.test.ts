@@ -3,6 +3,7 @@ import {
   buildNewsletterIssue,
   buildNewsletterHtml,
   categoryPath,
+  mergeNewsletterRecipients,
   selectUnsentArticles,
   type NewsletterArticle,
   type NewsletterSendLog
@@ -55,5 +56,22 @@ const html = buildNewsletterHtml(issue, 'https://theturndown.co');
 assert.match(html, /Hotel Bars Are Back/);
 assert.match(html, /https:\/\/theturndown\.co\/the-details\/hotel-bars-are-back/);
 assert.match(html, /unsubscribe/i);
+
+assert.deepEqual(
+  mergeNewsletterRecipients(
+    [{ email: 'reader@example.com' }, { email: 'DB-only@example.com' }],
+    [
+      { email: 'READER@example.com', unsubscribed: false },
+      { email: 'audience-only@example.com', unsubscribed: false },
+      { email: 'removed@example.com', unsubscribed: true }
+    ]
+  ),
+  [
+    { email: 'reader@example.com' },
+    { email: 'DB-only@example.com' },
+    { email: 'audience-only@example.com' }
+  ],
+  'database and active Resend audience recipients should be combined case-insensitively without re-adding unsubscribed contacts'
+);
 
 console.log('newsletter tests passed');

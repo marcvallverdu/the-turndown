@@ -18,6 +18,14 @@ export type NewsletterIssue = {
   articles: NewsletterArticle[];
 };
 
+export type NewsletterRecipient = {
+  email: string;
+};
+
+export type NewsletterAudienceRecipient = NewsletterRecipient & {
+  unsubscribed?: boolean;
+};
+
 const CATEGORY_PATHS: Record<string, string> = {
   'the-details': '/the-details',
   versus: '/versus',
@@ -44,6 +52,25 @@ export function selectUnsentArticles(
 ): NewsletterArticle[] {
   const sentSlugs = new Set(sendLogs.map((log) => log.article_slug));
   return articles.filter((article) => !sentSlugs.has(article.slug)).slice(0, limit);
+}
+
+export function mergeNewsletterRecipients(
+  databaseRecipients: NewsletterRecipient[],
+  audienceRecipients: NewsletterAudienceRecipient[]
+): NewsletterRecipient[] {
+  const recipients = new Map<string, NewsletterRecipient>();
+
+  for (const recipient of databaseRecipients) {
+    recipients.set(recipient.email.trim().toLowerCase(), { email: recipient.email });
+  }
+
+  for (const recipient of audienceRecipients) {
+    if (recipient.unsubscribed) continue;
+    const key = recipient.email.trim().toLowerCase();
+    if (!recipients.has(key)) recipients.set(key, { email: recipient.email });
+  }
+
+  return Array.from(recipients.values());
 }
 
 function htmlEscape(value: string) {

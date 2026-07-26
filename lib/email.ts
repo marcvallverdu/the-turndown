@@ -10,6 +10,18 @@ type ResendContactResponse = {
   error?: ResendError;
 };
 
+type ResendAudienceContact = {
+  id?: string;
+  email: string;
+  unsubscribed?: boolean;
+};
+
+type ResendContactListResponse = {
+  data?: ResendAudienceContact[];
+  has_more?: boolean;
+  error?: ResendError;
+};
+
 type ResendSendResponse = {
   id?: string;
   data?: { id?: string } | Array<{ id?: string }>;
@@ -63,6 +75,30 @@ export async function syncContactToResendAudience(email: string) {
   }
 
   return { id: payload.id ?? null, duplicate: false };
+}
+
+export async function listNewsletterAudienceContacts() {
+  const audienceId = process.env.RESEND_AUDIENCE_ID;
+  if (!audienceId) return [];
+
+  const contacts: ResendAudienceContact[] = [];
+  let after = '';
+
+  do {
+    const query = new URLSearchParams({ limit: '100' });
+    if (after) query.set('after', after);
+    const response = await fetch(
+      `${RESEND_API_BASE}/audiences/${encodeURIComponent(audienceId)}/contacts?${query}`,
+      { headers: resendHeaders() }
+    );
+    const payload = await parseResendResponse<ResendContactListResponse>(response);
+    const page = payload.data ?? [];
+    contacts.push(...page);
+    if (!payload.has_more || page.length === 0) break;
+    after = page[page.length - 1].id ?? '';
+  } while (after);
+
+  return contacts;
 }
 
 export type OutboundEmail = {
