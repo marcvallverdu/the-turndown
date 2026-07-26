@@ -10,7 +10,8 @@
     "test:seo": "tsx scripts/seo-regression-check.ts",
     "lint": "next lint",
     "test:homepage": "tsx tests/homepage.test.ts",
-    "test:newsletter": "tsx tests/newsletter.test.ts"
+    "test:newsletter": "tsx tests/newsletter.test.ts",
+    "test:seed-safety": "tsx tests/seed-safety.test.ts"
   },
   "dependencies": {
     "@types/pg": "^8.18.0",

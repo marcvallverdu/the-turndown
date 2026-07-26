@@ -912,7 +912,6 @@ const seed = async () => {
   await pool.query(`DELETE FROM brands`);
   await pool.query(`DELETE FROM destinations`);
   await pool.query(`DELETE FROM articles`);
-  await pool.query(`DELETE FROM newsletter_subscribers`);
 
   for (const hotel of hotels) {
     await pool.query(insertHotelQuery, [
