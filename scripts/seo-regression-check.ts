@@ -32,6 +32,12 @@ assert(layout.includes('DEFAULT_OG_IMAGE'), 'layout should expose a default OG i
 assert(layout.includes("'application/rss+xml': '/rss.xml'"), 'root metadata should expose the RSS feed as an alternate discovery surface');
 assert(layout.includes('rel="alternate" type="application/rss+xml" href="/rss.xml"'), 'root layout should render a durable RSS alternate link');
 
+const homepage = read('app/page.tsx');
+const heroImage = read('components/HeroImage.tsx');
+assert((homepage.match(/<h1\b/g) || []).length === 1, 'homepage route should define exactly one primary H1');
+assert(!heroImage.includes('<h1'), 'featured homepage review should not introduce a second H1');
+assert(heroImage.includes('<h2'), 'featured homepage review should retain a semantic section heading');
+
 const reviewsIndex = read('app/reviews/page.tsx');
 assert(reviewsIndex.includes('generateMetadata'), 'reviews index should generate metadata from search params');
 assert(reviewsIndex.includes('index: false') && reviewsIndex.includes('follow: true'), 'filtered review URLs should be noindex, follow');
