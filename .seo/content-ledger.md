@@ -88,3 +88,20 @@ Bangkok destination guide, with a careful inventory check for `/reviews/capella-
 
 ### Next best candidate
 Maybourne brand profile, unless a live post-deploy check shows Bangkok needs an additional supporting review or a richer best-luxury-hotels template pass before moving to the next queued brand.
+
+## 2026-08-01 weekly growth loop
+
+### Candidates scored
+| Candidate | Type | Score | Notes |
+| --- | --- | ---: | --- |
+| Maybourne brand profile | Brand profile | 90 | Active queue item, live `/brands/maybourne` returned 404, two Maybourne-tagged reviews exist (`/reviews/the-connaught`, `/reviews/the-berkeley`), and it strengthens the London brand graph without inventing stay claims. |
+| Best new luxury hotels in Paris | New-opening roundup | 80 | Strong next queued freshness topic, but requires more opening/date/source verification than the brand profile and has less existing review inventory. |
+| Rosewood London vs The Connaught | Versus page | 78 | Good decision-stage London intent with two existing reviews, but scheduled later and would be stronger after the Maybourne profile exists. |
+| Best luxury hotels London hub refresh | Hub refresh | 76 | Useful route-class improvement; live hub already works and lists six hotels, so it was lower urgency than repairing a missing queued brand route. |
+| Review-page newsletter routing | Conversion/internal-link improvement | 70 | Sensible future improvement, but not bundled because the Maybourne profile is the safest high-value weekly change and local production DB access is absent. |
+
+### Shipped
+- `/brands/maybourne` — queued Maybourne brand profile committed as `scripts/seed-aug1.ts`; production seeding is expected after deployment because local `DATABASE_URL` is unavailable in this cron environment.
+
+### Next best candidate
+Best New Luxury Hotels in Paris, with source-backed opening facts and links into `/destinations/paris`, `/best-luxury-hotels/paris`, and live Paris hotel reviews.
