@@ -105,3 +105,20 @@ Maybourne brand profile, unless a live post-deploy check shows Bangkok needs an 
 
 ### Next best candidate
 Best New Luxury Hotels in Paris, with source-backed opening facts and links into `/destinations/paris`, `/best-luxury-hotels/paris`, and live Paris hotel reviews.
+
+## 2026-08-08 weekly growth loop
+
+### Candidates scored
+| Candidate | Type | Score | Notes |
+| --- | --- | ---: | --- |
+| Best New Luxury Hotels in Paris | New-opening / freshness roundup | 91 | Active queue item, live route returned 404, Paris hub/review routes are already live, and official sources support a useful new/reopened/refreshed decision guide without inventing stay claims. |
+| Rosewood London vs The Connaught | Versus page | 83 | Strong next decision-stage London topic with both review routes available, but scheduled later and lower freshness value than the missing Paris new-openings page. |
+| Best Luxury Hotels in Paris hub refresh | Hub/internal-link refresh | 79 | Live `/best-luxury-hotels/paris` works and can absorb links from the new Paris roundup; useful but less urgent than filling the queued 404. |
+| Maybourne production seed/live repair | Operational content repair | 77 | Live `/brands/maybourne` still returned 404, suggesting the prior seed has not reached production; important to verify after deploy, but not a reason to skip this week's queued content. |
+| Review-page newsletter routing | Conversion improvement | 70 | Still useful sitewide, but no evidence it beats a high-intent Paris freshness asset this week. |
+
+### Shipped
+- `/new-openings/best-new-luxury-hotels-paris` — queued Paris new-openings/refreshed-hotel roundup committed as `scripts/seed-aug8.ts`; production seeding is expected after deployment because local `DATABASE_URL` is unavailable in this cron environment.
+
+### Next best candidate
+Rosewood London vs The Connaught, unless the next live check shows that `/brands/maybourne` still needs a production seed/runbook fix before another content publish.

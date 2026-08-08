@@ -8,3 +8,4 @@ Observed performance evidence belongs here after GSC/analytics data exists. Do n
 | 2026-07-25 | /destinations/bangkok | best luxury hotels bangkok / Bangkok luxury hotel guide | Pending post-publication GSC/analytics review | Pending |
 | 2026-07-25 | /best-luxury-hotels/bangkok | best luxury hotels bangkok | Pending post-publication GSC/analytics review | Pending |
 | 2026-08-01 | /brands/maybourne | maybourne hotels | Pending post-publication GSC/analytics review | Pending |
+| 2026-08-08 | /new-openings/best-new-luxury-hotels-paris | best new luxury hotels paris | Pending post-publication GSC/analytics review | Pending |
