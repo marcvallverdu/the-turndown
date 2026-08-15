@@ -8,7 +8,7 @@ import NewsletterSignup from '@/components/NewsletterSignup';
 import JsonLd from '@/components/JsonLd';
 import { getAllBrands, getFeaturedHotels, getLatestArticleByCategory, getLatestHotels } from '@/lib/db';
 
-export const revalidate = 3600;
+export const revalidate = 1;
 
 export const metadata: Metadata = {
   title: 'Luxury Hotel Reviews, Destination Guides & Brand Profiles',

@@ -4,7 +4,7 @@ import FilterBar from '@/components/FilterBar';
 import JsonLd from '@/components/JsonLd';
 import { getAllBrands, getAllDestinations, getAllHotels } from '@/lib/db';
 
-export const revalidate = 3600;
+export const revalidate = 1;
 
 const title = `Luxury Hotel Reviews`;
 const description = `Independent luxury hotel reviews from The Turndown, curated by brand, destination, style, and nightly rate.`;

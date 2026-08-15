@@ -2,7 +2,7 @@ import { connection } from 'next/server';
 import { getRecentNewsletterArticles } from '@/lib/db';
 import { SITE_NAME, SITE_URL, absoluteUrl } from '@/lib/seo';
 
-export const revalidate = 3600;
+export const revalidate = 1;
 
 const categoryPaths: Record<string, string> = {
   'the-details': 'the-details',
@@ -33,6 +33,8 @@ export async function GET() {
       <title>${escapeXml(article.title)}</title>
       <link>${url}</link>
       <guid isPermaLink="true">${url}</guid>
+      <turndown:version>${escapeXml(article.content_version)}</turndown:version>
+      <turndown:checksum>${escapeXml(article.content_checksum)}</turndown:checksum>
       <description>${escapeXml(article.subtitle || '')}</description>
       <pubDate>${published}</pubDate>
     </item>`;
@@ -40,7 +42,7 @@ export async function GET() {
     .join('\n');
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:turndown="https://theturndown.co/ns/content">
   <channel>
     <title>${escapeXml(SITE_NAME)}</title>
     <link>${SITE_URL}</link>
@@ -55,7 +57,7 @@ ${items}
   return new Response(xml, {
     headers: {
       'Content-Type': 'application/rss+xml; charset=utf-8',
-      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400'
+      'Cache-Control': 'public, s-maxage=1, must-revalidate'
     }
   });
 }

@@ -1,20 +1,69 @@
 import { unstable_cache } from 'next/cache';
 import { Pool } from 'pg';
-import { schema } from '@/lib/schema';
 import type { NewsletterArticle, NewsletterSendLog } from '@/lib/newsletter';
 
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL
 });
 
-let schemaReady: Promise<unknown> | null = null;
+// Schema and publication authority are installed by the migration operator, never by the runtime role.
+const ensureSchema = async () => {};
 
-const ensureSchema = async () => {
-  if (!schemaReady) {
-    schemaReady = pool.query(schema);
-  }
-  await schemaReady;
-};
+const activeHotels = `
+  SELECT ci.legacy_id AS id, ci.slug, cv.id::text AS content_version, cv.payload_checksum AS content_checksum,
+    cv.payload->>'name' AS name, cv.payload->>'brand' AS brand, cv.payload->>'brandSlug' AS brand_slug,
+    cv.payload->>'location' AS location, cv.payload->>'country' AS country, cv.payload->>'countrySlug' AS country_slug,
+    cv.payload->>'region' AS region, cv.payload->>'regionSlug' AS region_slug,
+    (cv.payload->>'latitude')::double precision AS latitude, (cv.payload->>'longitude')::double precision AS longitude,
+    cv.payload->>'priceRange' AS price_range, (cv.payload->>'priceFrom')::integer AS price_from,
+    (cv.payload->>'priceTo')::integer AS price_to, cv.payload->>'currency' AS currency, cv.payload->>'style' AS style,
+    CASE WHEN cv.created_by='migration:0001_content_publication' THEN cv.legacy_snapshot->>'best_for' ELSE (cv.payload->'bestFor')::text END AS best_for,
+    cv.payload->>'heroImage' AS hero_image,
+    CASE WHEN cv.created_by='migration:0001_content_publication' THEN cv.legacy_snapshot->>'images' ELSE (cv.payload->'images')::text END AS images,
+    cv.payload->>'website' AS website, cv.payload->>'bookingUrl' AS booking_url, cv.payload->>'tagline' AS tagline,
+    cv.payload->>'reviewIntro' AS review_intro, cv.payload->>'reviewArrival' AS review_arrival,
+    cv.payload->>'reviewRoom' AS review_room, cv.payload->>'reviewService' AS review_service,
+    cv.payload->>'reviewFood' AS review_food, cv.payload->>'reviewDetails' AS review_details,
+    cv.payload->>'reviewVerdict' AS review_verdict, cv.payload->>'verdictBestFor' AS verdict_best_for,
+    cv.payload->>'verdictSkipIf' AS verdict_skip_if, cv.payload->>'verdictStandout' AS verdict_standout,
+    (cv.payload->>'ratingOverall')::double precision AS rating_overall, (cv.payload->>'ratingRoom')::double precision AS rating_room,
+    (cv.payload->>'ratingService')::double precision AS rating_service, (cv.payload->>'ratingFood')::double precision AS rating_food,
+    (cv.payload->>'ratingValue')::double precision AS rating_value, (cv.payload->>'ratingLocation')::double precision AS rating_location,
+    1::integer AS published, (cv.payload->>'featured')::boolean::integer AS featured,
+    (cv.payload->>'createdAt')::timestamptz AS created_at, (cv.payload->>'updatedAt')::timestamptz AS updated_at
+  FROM public.content_items ci
+  INNER JOIN public.content_versions cv
+    ON cv.id=ci.active_version_id AND cv.item_id=ci.id AND cv.content_type=ci.content_type
+  WHERE ci.content_type='hotel'`;
+
+const activeBrands = `
+  SELECT ci.legacy_id AS id,ci.slug,cv.id::text AS content_version,cv.payload_checksum AS content_checksum,cv.payload->>'name' AS name,cv.payload->>'tagline' AS tagline,
+    cv.payload->>'heroImage' AS hero_image,cv.payload->>'contentMd' AS content_md,
+    (cv.payload->>'hotelCount')::integer AS hotel_count,(cv.payload->>'foundedYear')::integer AS founded_year,
+    cv.payload->>'parentCompany' AS parent_company,cv.payload->>'bestProperty' AS best_property,cv.payload->>'website' AS website,
+    1::integer AS published,(cv.payload->>'createdAt')::timestamptz AS created_at,(cv.payload->>'updatedAt')::timestamptz AS updated_at
+  FROM public.content_items ci INNER JOIN public.content_versions cv
+    ON cv.id=ci.active_version_id AND cv.item_id=ci.id AND cv.content_type=ci.content_type
+  WHERE ci.content_type='brand'`;
+
+const activeDestinations = `
+  SELECT ci.legacy_id AS id,ci.slug,cv.id::text AS content_version,cv.payload_checksum AS content_checksum,cv.payload->>'name' AS name,cv.payload->>'country' AS country,
+    cv.payload->>'region' AS region,cv.payload->>'heroImage' AS hero_image,cv.payload->>'introMd' AS intro_md,
+    cv.payload->>'bestTime' AS best_time,cv.payload->>'contentMd' AS content_md,1::integer AS published,
+    (cv.payload->>'createdAt')::timestamptz AS created_at,(cv.payload->>'updatedAt')::timestamptz AS updated_at
+  FROM public.content_items ci INNER JOIN public.content_versions cv
+    ON cv.id=ci.active_version_id AND cv.item_id=ci.id AND cv.content_type=ci.content_type
+  WHERE ci.content_type='destination'`;
+
+const activeArticles = `
+  SELECT ci.legacy_id AS id,ci.slug,cv.id::text AS content_version,cv.payload_checksum AS content_checksum,cv.payload->>'title' AS title,cv.payload->>'subtitle' AS subtitle,
+    cv.payload->>'category' AS category,cv.payload->>'heroImage' AS hero_image,cv.payload->>'contentMd' AS content_md,
+    CASE WHEN cv.created_by='migration:0001_content_publication' THEN cv.legacy_snapshot->>'hotels_mentioned' ELSE (cv.payload->'hotelsMentioned')::text END AS hotels_mentioned,1::integer AS published,
+    (cv.payload->>'featured')::boolean::integer AS featured,(cv.payload->>'createdAt')::timestamptz AS created_at,
+    (cv.payload->>'updatedAt')::timestamptz AS updated_at
+  FROM public.content_items ci INNER JOIN public.content_versions cv
+    ON cv.id=ci.active_version_id AND cv.item_id=ci.id AND cv.content_type=ci.content_type
+  WHERE ci.content_type='article' AND cv.payload->>'category' IN ('the-details','versus','new-openings')`;
 
 export type HotelFilters = {
   brandSlug?: string;
@@ -81,19 +130,19 @@ function destinationScope(destination: { name: string; country?: string; slug: s
 
 async function fetchDestinationBySlug(slug: string) {
   await ensureSchema();
-  const result = await pool.query(`SELECT * FROM destinations WHERE slug = $1 AND published = 1`, [slug]);
+  const result = await pool.query(`WITH destinations AS (${activeDestinations}) SELECT * FROM destinations WHERE slug = $1`, [slug]);
   return result.rows[0] as { name: string; country?: string } | undefined;
 }
 
 async function fetchGetHotelBySlug(slug: string) {
   await ensureSchema();
-  const result = await pool.query(`SELECT * FROM hotels WHERE slug = $1 AND published = 1`, [slug]);
+  const result = await pool.query(`WITH hotels AS (${activeHotels}) SELECT * FROM hotels WHERE slug = $1`, [slug]);
   return result.rows[0] as any | undefined;
 }
 
 async function fetchGetAllHotels(filters?: HotelFilters) {
   await ensureSchema();
-  let query = `SELECT * FROM hotels WHERE published = 1`;
+  let query = `WITH hotels AS (${activeHotels}) SELECT * FROM hotels WHERE true`;
   const params: any[] = [];
 
   if (filters?.brandSlug) {
@@ -128,7 +177,7 @@ async function fetchGetAllHotels(filters?: HotelFilters) {
 async function fetchGetLatestHotels(limit = 4) {
   await ensureSchema();
   const result = await pool.query(
-    `SELECT * FROM hotels WHERE published = 1 ORDER BY created_at DESC LIMIT $1`,
+    `WITH hotels AS (${activeHotels}) SELECT * FROM hotels ORDER BY created_at DESC LIMIT $1`,
     [limit]
   );
   return result.rows as any[];
@@ -137,7 +186,7 @@ async function fetchGetLatestHotels(limit = 4) {
 async function fetchGetFeaturedHotels(limit = 1) {
   await ensureSchema();
   const result = await pool.query(
-    `SELECT * FROM hotels WHERE published = 1 AND featured = 1 ORDER BY created_at DESC LIMIT $1`,
+    `WITH hotels AS (${activeHotels}) SELECT * FROM hotels WHERE featured = 1 ORDER BY created_at DESC LIMIT $1`,
     [limit]
   );
   return result.rows as any[];
@@ -146,7 +195,7 @@ async function fetchGetFeaturedHotels(limit = 1) {
 async function fetchGetHotelsByBrand(brandSlug: string) {
   await ensureSchema();
   const result = await pool.query(
-    `SELECT * FROM hotels WHERE brand_slug = $1 AND published = 1 ORDER BY created_at DESC`,
+    `WITH hotels AS (${activeHotels}) SELECT * FROM hotels WHERE brand_slug = $1 ORDER BY created_at DESC`,
     [brandSlug]
   );
   return result.rows as any[];
@@ -155,7 +204,7 @@ async function fetchGetHotelsByBrand(brandSlug: string) {
 async function fetchGetHotelsByRegion(regionSlug: string, limit = 3) {
   await ensureSchema();
   const result = await pool.query(
-    `SELECT * FROM hotels WHERE region_slug = $1 AND published = 1 ORDER BY created_at DESC LIMIT $2`,
+    `WITH hotels AS (${activeHotels}) SELECT * FROM hotels WHERE region_slug = $1 ORDER BY created_at DESC LIMIT $2`,
     [regionSlug, limit]
   );
   return result.rows as any[];
@@ -165,8 +214,8 @@ async function fetchGetHotelsBySlugs(slugs: string[]) {
   await ensureSchema();
   if (!slugs.length) return [];
   const result = await pool.query(
-    `SELECT * FROM hotels
-     WHERE slug = ANY($1::text[]) AND published = 1
+    `WITH hotels AS (${activeHotels}) SELECT * FROM hotels
+     WHERE slug = ANY($1::text[])
      ORDER BY array_position($1::text[], slug)`,
     [slugs]
   );
@@ -175,25 +224,25 @@ async function fetchGetHotelsBySlugs(slugs: string[]) {
 
 async function fetchGetAllBrands() {
   await ensureSchema();
-  const result = await pool.query(`SELECT * FROM brands WHERE published = 1 ORDER BY name`);
+  const result = await pool.query(`WITH brands AS (${activeBrands}) SELECT * FROM brands ORDER BY name`);
   return result.rows as any[];
 }
 
 async function fetchGetBrandBySlug(slug: string) {
   await ensureSchema();
-  const result = await pool.query(`SELECT * FROM brands WHERE slug = $1 AND published = 1`, [slug]);
+  const result = await pool.query(`WITH brands AS (${activeBrands}) SELECT * FROM brands WHERE slug = $1`, [slug]);
   return result.rows[0] as any | undefined;
 }
 
 async function fetchGetAllDestinations() {
   await ensureSchema();
-  const result = await pool.query(`SELECT * FROM destinations WHERE published = 1 ORDER BY name`);
+  const result = await pool.query(`WITH destinations AS (${activeDestinations}) SELECT * FROM destinations ORDER BY name`);
   return result.rows as any[];
 }
 
 async function fetchGetDestinationBySlug(slug: string) {
   await ensureSchema();
-  const result = await pool.query(`SELECT * FROM destinations WHERE slug = $1 AND published = 1`, [slug]);
+  const result = await pool.query(`WITH destinations AS (${activeDestinations}) SELECT * FROM destinations WHERE slug = $1`, [slug]);
   return result.rows[0] as any | undefined;
 }
 
@@ -201,7 +250,7 @@ async function fetchGetHotelsForDestination(destination: { name: string; country
   await ensureSchema();
   const scope = destinationScope(destination);
   const result = await pool.query(
-    `SELECT * FROM hotels WHERE ${scope.clause} AND published = 1 ORDER BY created_at DESC`,
+    `WITH hotels AS (${activeHotels}) SELECT * FROM hotels WHERE ${scope.clause} ORDER BY created_at DESC`,
     scope.values
   );
   return result.rows as any[];
@@ -210,7 +259,7 @@ async function fetchGetHotelsForDestination(destination: { name: string; country
 async function fetchGetArticlesByCategory(category: string) {
   await ensureSchema();
   const result = await pool.query(
-    `SELECT * FROM articles WHERE category = $1 AND published = 1 ORDER BY created_at DESC`,
+    `WITH articles AS (${activeArticles}) SELECT * FROM articles WHERE category = $1 ORDER BY created_at DESC`,
     [category]
   );
   return result.rows as any[];
@@ -218,14 +267,14 @@ async function fetchGetArticlesByCategory(category: string) {
 
 async function fetchGetArticleBySlug(slug: string) {
   await ensureSchema();
-  const result = await pool.query(`SELECT * FROM articles WHERE slug = $1 AND published = 1`, [slug]);
+  const result = await pool.query(`WITH articles AS (${activeArticles}) SELECT * FROM articles WHERE slug = $1`, [slug]);
   return result.rows[0] as any | undefined;
 }
 
 async function fetchGetArticleBySlugAndCategory(slug: string, category: string) {
   await ensureSchema();
   const result = await pool.query(
-    `SELECT * FROM articles WHERE slug = $1 AND category = $2 AND published = 1`,
+    `WITH articles AS (${activeArticles}) SELECT * FROM articles WHERE slug = $1 AND category = $2`,
     [slug, category]
   );
   return result.rows[0] as any | undefined;
@@ -234,7 +283,7 @@ async function fetchGetArticleBySlugAndCategory(slug: string, category: string) 
 async function fetchGetLatestArticleByCategory(category: string) {
   await ensureSchema();
   const result = await pool.query(
-    `SELECT * FROM articles WHERE category = $1 AND published = 1 ORDER BY created_at DESC LIMIT 1`,
+    `WITH articles AS (${activeArticles}) SELECT * FROM articles WHERE category = $1 ORDER BY created_at DESC LIMIT 1`,
     [category]
   );
   return result.rows[0] as any | undefined;
@@ -243,16 +292,14 @@ async function fetchGetLatestArticleByCategory(category: string) {
 async function fetchGetArticlesForSitemap() {
   await ensureSchema();
   const result = await pool.query(
-    `SELECT slug, category, created_at, updated_at
-     FROM articles
-     WHERE published = 1
-       AND category IN ('the-details', 'versus', 'new-openings')`
+    `WITH articles AS (${activeArticles}) SELECT slug,category,created_at,updated_at FROM articles`
   );
   return result.rows as { slug: string; category: string; created_at: string; updated_at: string | null }[];
 }
 
 
-const cacheOptions = { revalidate: 3600 } as const;
+// Publication verification must converge quickly after an atomic pointer change.
+const cacheOptions = { revalidate: 1 } as const;
 
 export const getHotelBySlug = unstable_cache(fetchGetHotelBySlug, ['getHotelBySlug'], cacheOptions);
 export const getAllHotels = unstable_cache(fetchGetAllHotels, ['getAllHotels'], cacheOptions);
@@ -315,15 +362,13 @@ export async function getConfirmedNewsletterSubscribers() {
 export async function getRecentNewsletterArticles(limit = 12) {
   await ensureSchema();
   const result = await pool.query(
-    `SELECT slug, title, subtitle, category, created_at
+    `WITH articles AS (${activeArticles}) SELECT slug,title,subtitle,category,created_at,content_version,content_checksum
      FROM articles
-     WHERE published = 1
-       AND category IN ('the-details', 'versus', 'new-openings')
      ORDER BY created_at DESC
      LIMIT $1`,
     [limit]
   );
-  return result.rows as NewsletterArticle[];
+  return result.rows as Array<NewsletterArticle & { content_version: string; content_checksum: string }>;
 }
 
 export async function getNewsletterSendLogs() {
@@ -354,4 +399,3 @@ export async function recordNewsletterSend(
 }
 
 export default pool;
-

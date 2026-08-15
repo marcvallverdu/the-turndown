@@ -5,7 +5,7 @@ import { getAllDestinations, getHotelsForDestination } from '@/lib/db';
 import JsonLd from '@/components/JsonLd';
 import { itemListJsonLd } from '@/lib/seo';
 
-export const revalidate = 3600;
+export const revalidate = 1;
 
 export const metadata: Metadata = {
   title: 'Best Luxury Hotels by Destination',

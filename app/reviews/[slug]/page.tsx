@@ -26,7 +26,7 @@ function Paragraphs({ text }: { text?: string | null }) {
   );
 }
 
-export const revalidate = 3600;
+export const revalidate = 1;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -35,6 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const hotel = await getHotelBySlug(slug);
   if (!hotel) return { title: `Review` };
   return {
+    other: { 'content-version': hotel.content_version, 'content-checksum': hotel.content_checksum },
     title: `${hotel.name} Review`,
     description: hotel.tagline,
     alternates: {

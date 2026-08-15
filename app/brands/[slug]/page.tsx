@@ -8,7 +8,7 @@ import ReviewCard from '@/components/ReviewCard';
 import JsonLd from '@/components/JsonLd';
 import { getBrandBySlug, getHotelBySlug, getHotelsByBrand } from '@/lib/db';
 
-export const revalidate = 3600;
+export const revalidate = 1;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -32,6 +32,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!brand) return { title: `Brand` };
   const hotels = await getHotelsByBrand(brand.slug);
   return {
+    other: { 'content-version': brand.content_version, 'content-checksum': brand.content_checksum },
     title: `${brand.name} Hotels: Brand Guide & Best Properties`,
     description: brand.tagline,
     alternates: {

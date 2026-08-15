@@ -5,7 +5,7 @@ import Image from 'next/image';
 import JsonLd from '@/components/JsonLd';
 import { getArticlesByCategory } from '@/lib/db';
 
-export const revalidate = 3600;
+export const revalidate = 1;
 
 export const metadata: Metadata = {
   title: `New Luxury Hotel Openings`,

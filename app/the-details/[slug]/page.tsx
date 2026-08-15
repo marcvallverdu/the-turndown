@@ -7,7 +7,7 @@ import MarkdownContent from '@/components/MarkdownContent';
 import { getArticleBySlugAndCategory } from '@/lib/db';
 import { articleJsonLd } from '@/lib/seo';
 
-export const revalidate = 3600;
+export const revalidate = 1;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -17,6 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!article) return { title: `Essay` };
   const path = `/the-details/${article.slug}`;
   return {
+    other: { 'content-version': article.content_version, 'content-checksum': article.content_checksum },
     title: article.title,
     description: article.subtitle,
     alternates: {

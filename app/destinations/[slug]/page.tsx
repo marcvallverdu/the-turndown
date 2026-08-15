@@ -8,7 +8,7 @@ import ReviewCard from '@/components/ReviewCard';
 import JsonLd from '@/components/JsonLd';
 import { getDestinationBySlug, getHotelsForDestination } from '@/lib/db';
 
-export const revalidate = 3600;
+export const revalidate = 1;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -24,6 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!destination) return { title: `Destination` };
   const hotels = await getHotelsForDestination(destination);
   return {
+    other: { 'content-version': destination.content_version, 'content-checksum': destination.content_checksum },
     title: `${destination.name} Luxury Hotel Guide`,
     description: destination.intro_md,
     alternates: {

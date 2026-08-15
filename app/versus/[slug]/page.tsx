@@ -10,7 +10,7 @@ import { getArticleBySlugAndCategory, getHotelsBySlugs } from '@/lib/db';
 import { articleJsonLd } from '@/lib/seo';
 import { jsonParse } from '@/lib/utils';
 
-export const revalidate = 3600;
+export const revalidate = 1;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -20,6 +20,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!article) return { title: `Versus` };
   const path = `/versus/${article.slug}`;
   return {
+    other: { 'content-version': article.content_version, 'content-checksum': article.content_checksum },
     title: article.title,
     description: article.subtitle,
     alternates: {

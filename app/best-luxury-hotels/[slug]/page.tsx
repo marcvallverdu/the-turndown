@@ -7,7 +7,7 @@ import ReviewCard from '@/components/ReviewCard';
 import { getDestinationBySlug, getHotelsForDestination } from '@/lib/db';
 import { absoluteUrl, itemListJsonLd } from '@/lib/seo';
 
-export const revalidate = 3600;
+export const revalidate = 1;
 
 type PageProps = { params: Promise<{ slug: string }> };
 

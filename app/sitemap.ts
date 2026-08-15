@@ -9,7 +9,7 @@ import {
   getHotelsForDestination
 } from '@/lib/db';
 
-export const revalidate = 3600;
+export const revalidate = 1;
 
 const articleCategoryPaths: Record<string, string> = {
   'the-details': 'the-details',
