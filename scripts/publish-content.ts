@@ -208,16 +208,17 @@ async function verifyMedia(media: ContentMedia): Promise<void> {
   if (dimensions.width !== media.width || dimensions.height !== media.height) throw new Error(`media ${media.url} dimension mismatch`);
 }
 
-async function verifyHistoricalMedia(state: ActivePayload): Promise<Record<string, unknown>[]> {
+export async function verifyHistoricalMedia(state: ActivePayload): Promise<Record<string, unknown>[]> {
+  const urls = [...new Set([
+    state.payload?.heroImage,
+    ...(state.content_type === 'hotel' && Array.isArray(state.payload?.images) ? state.payload.images : [])
+  ].filter((value): value is string => typeof value === 'string'))];
   if ((state.media ?? []).length) {
     await Promise.all((state.media ?? []).map(verifyMedia));
     return (state.media ?? []).map(({ url, checksum, byteLength, width, height }) => ({ url, checksum, byteLength, width, height, manifestBound: true }));
   }
+  if (!urls.length) return [];
   if (state.created_by !== 'migration:0001_content_publication' || !state.payload) throw new Error('historical version has no verifiable media manifest');
-  const urls = [...new Set([
-    state.payload.heroImage,
-    ...(state.content_type === 'hotel' && Array.isArray(state.payload.images) ? state.payload.images : [])
-  ].filter((value): value is string => typeof value === 'string'))];
   return Promise.all(urls.map(async (url) => {
     const { bytes, contentType } = await fetchPinnedPublicMedia(url);
     if (!['image/png', 'image/jpeg', 'image/webp'].includes(contentType ?? '')) throw new Error(`legacy media ${url} uses an unsupported content type`);

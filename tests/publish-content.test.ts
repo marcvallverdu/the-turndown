@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { blocksIndexing, parsePublisherArgs, runPublisher } from '../scripts/publish-content';
+import { blocksIndexing, parsePublisherArgs, runPublisher, verifyHistoricalMedia } from '../scripts/publish-content';
 
 const base = ['publish', 'candidate.json', '--base-url', 'https://theturndown.co'];
 assert.deepEqual(parsePublisherArgs(base), {
@@ -22,6 +22,7 @@ assert.equal(blocksIndexing('googlebot: noindex'), true);
 assert.equal(blocksIndexing('index, follow'), false);
 
 async function main() {
+  assert.deepEqual(await verifyHistoricalMedia({ content_type: 'article', payload: { heroImage: null }, media: [], created_by: 'release-canary' } as never), []);
   let databaseConstructed = false;
   await assert.rejects(
     () => runPublisher(
