@@ -122,3 +122,21 @@ Best New Luxury Hotels in Paris, with source-backed opening facts and links into
 
 ### Next best candidate
 Rosewood London vs The Connaught, unless the next live check shows that `/brands/maybourne` still needs a production seed/runbook fix before another content publish.
+
+## 2026-08-15 weekly growth loop
+
+### Candidates scored
+| Candidate | Type | Score | Notes |
+| --- | --- | ---: | --- |
+| Rosewood London vs The Connaught | Versus page | 92 | Active queue item, live route returned 404, both hotel review routes are live, London hub exists, and official hotel pages support the location/bar/spa/dining claims without requiring firsthand stay language. |
+| Best Luxury Hotels in London decision-guide links | Hub/internal-link refresh | 84 | The live London hub listed six hotels but did not route readers into the existing London comparison pages; a small route-class enhancement creates crawlable decision links from the high-intent hub. |
+| The Return of the Palace Hotel | Essay | 77 | Next queued topic and useful for newsletter voice, but lower decision/search intent than a missing London comparison route with existing hotel inventory. |
+| Aman New York vs The Mark | Versus page | 76 | Strong future comparison, but scheduled later and less connected to this week's London hub/linking opportunity. |
+| Dorchester Collection brand profile | Brand profile | 72 | Brand-demand candidate, but no immediate route gap beats the active London comparison and hub improvement. |
+
+### Shipped
+- `/versus/rosewood-london-vs-the-connaught` — queued London comparison committed as `scripts/seed-aug15.ts`; production seeding is expected after deployment because local `DATABASE_URL` is unavailable in this cron environment.
+- `/best-luxury-hotels/london` — route template now shows destination-specific decision-guide cards, linking the London hub to Rosewood vs Connaught, Claridge's vs Connaught, and Bulgari vs Rosewood London.
+
+### Next best candidate
+The Return of the Palace Hotel, but only if the next check confirms `/versus/rosewood-london-vs-the-connaught` has been seeded live; otherwise prioritize the production seed/live repair before adding another article.

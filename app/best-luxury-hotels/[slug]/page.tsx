@@ -11,6 +11,33 @@ export const revalidate = 3600;
 
 type PageProps = { params: Promise<{ slug: string }> };
 
+const relatedDecisionGuides: Record<string, { title: string; href: string; note: string }[]> = {
+  london: [
+    {
+      title: `Rosewood London vs The Connaught`,
+      href: `/versus/rosewood-london-vs-the-connaught`,
+      note: `Open Holborn energy versus Mayfair discretion.`
+    },
+    {
+      title: `Claridge's vs The Connaught`,
+      href: `/versus/claridges-vs-connaught`,
+      note: `Two Mayfair classics with very different kinds of theatre.`
+    },
+    {
+      title: `Bulgari London vs Rosewood London`,
+      href: `/versus/bulgari-vs-rosewood-london`,
+      note: `Knightsbridge polish versus a clubbier central London base.`
+    }
+  ],
+  paris: [
+    {
+      title: `Best New Luxury Hotels in Paris`,
+      href: `/new-openings/best-new-luxury-hotels-paris`,
+      note: `New, reopened, and refreshed addresses to weigh against the palace set.`
+    }
+  ]
+};
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const destination = await getDestinationBySlug(slug);
@@ -52,6 +79,7 @@ export default async function BestLuxuryHotelsDestinationPage({ params }: PagePr
   const path = `/best-luxury-hotels/${destination.slug}`;
   const title = `Best Luxury Hotels in ${destination.name}`;
   const intro = `An edited shortlist of the ${destination.name} stays worth planning around, pulled from The Turndown's reviewed hotels and destination notes.`;
+  const decisionGuides = relatedDecisionGuides[destination.slug] ?? [];
   const faqItems = [
     {
       question: `What are the best luxury hotels in ${destination.name}?`,
@@ -122,6 +150,21 @@ export default async function BestLuxuryHotelsDestinationPage({ params }: PagePr
           <ReviewCard key={hotel.slug} hotel={hotel} className={index % 2 === 1 ? `md:mt-16` : ``} />
         ))}
       </section>
+
+      {decisionGuides.length > 0 && (
+        <section className="border-t border-charcoal/10 pt-10">
+          <p className="kicker">Decision guides</p>
+          <h2 className="mt-4 font-serif text-3xl">Compare the short list before you book</h2>
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            {decisionGuides.map((guide) => (
+              <Link key={guide.href} href={guide.href} className="border border-charcoal/10 p-5 transition hover:border-gold/60">
+                <span className="block font-serif text-xl text-charcoal">{guide.title}</span>
+                <span className="mt-3 block text-sm leading-6 text-charcoal/65">{guide.note}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="grid gap-6 border-t border-charcoal/10 pt-10 md:grid-cols-2">
         {faqItems.map((item) => (
