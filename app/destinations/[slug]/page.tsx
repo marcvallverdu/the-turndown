@@ -104,9 +104,11 @@ export default async function DestinationPage({ params }: PageProps) {
         <p className="kicker mt-6">Search guides</p>
         <h2 className="mt-4 font-serif text-3xl">Shortlists worth opening next</h2>
         <div className="mt-6 grid gap-3 md:grid-cols-3">
-          <Link href={`/best-luxury-hotels/${destination.slug}`} className="border border-charcoal/10 p-4 text-sm transition hover:border-gold/60 hover:text-gold">
-            Best luxury hotels in {destination.name}
-          </Link>
+          {hotels.length >= 2 && (
+            <Link href={`/best-luxury-hotels/${destination.slug}`} className="border border-charcoal/10 p-4 text-sm transition hover:border-gold/60 hover:text-gold">
+              Best luxury hotels in {destination.name}
+            </Link>
+          )}
           {priorityDestinationSearches.filter((item) => item.slug !== destination.slug).slice(0, 2).map((item) => (
             <Link key={item.slug} href={`/best-luxury-hotels/${item.slug}`} className="border border-charcoal/10 p-4 transition hover:border-gold/60">
               <span className="block text-sm hover:text-gold">{item.label}</span>

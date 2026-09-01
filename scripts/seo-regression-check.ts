@@ -81,6 +81,7 @@ assert(brandDetail.includes('getHotelsByBrand') && brandDetail.includes('index: 
 
 const destinationDetail = read('app/destinations/[slug]/page.tsx');
 assert(destinationDetail.includes('getHotelsForDestination') && destinationDetail.includes('index: false'), 'destination detail pages with no reviewed hotels should be noindex');
+assert(destinationDetail.includes('hotels.length >= 2 && ('), 'destination pages should not link to thin noindex best-hotel routes');
 
 const sitemap = read('app/sitemap.ts');
 assert(!sitemap.includes('const now = new Date()'), 'sitemap should not stamp every hub URL with the current request time');
