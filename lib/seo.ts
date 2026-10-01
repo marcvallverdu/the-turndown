@@ -2,6 +2,10 @@ export const SITE_URL = 'https://theturndown.co';
 export const SITE_NAME = 'The Turndown';
 export const DEFAULT_OG_IMAGE = '/og-default.png';
 
+export function hasIndexableHotelShortlist(hotels: unknown[]) {
+  return hotels.length >= 2;
+}
+
 export const publisher = {
   '@type': 'Organization',
   name: SITE_NAME,

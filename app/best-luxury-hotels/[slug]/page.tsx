@@ -5,7 +5,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import ReviewCard from '@/components/ReviewCard';
 import { getDestinationBySlug, getHotelsForDestination } from '@/lib/db';
-import { absoluteUrl, itemListJsonLd } from '@/lib/seo';
+import { absoluteUrl, hasIndexableHotelShortlist, itemListJsonLd } from '@/lib/seo';
 
 export const revalidate = 1;
 
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!destination) return { title: 'Best Luxury Hotels' };
 
   const hotels = await getHotelsForDestination(destination);
-  const shouldIndex = hotels.length >= 2;
+  const shouldIndex = hasIndexableHotelShortlist(hotels);
   const title = `Best Luxury Hotels in ${destination.name}`;
   const description = `The Turndown's edited guide to the best luxury hotels in ${destination.name}, with reviewed stays, standout rooms, service notes, and when to go.`;
   const path = `/best-luxury-hotels/${destination.slug}`;

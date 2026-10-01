@@ -81,11 +81,17 @@ assert(brandDetail.includes('getHotelsByBrand') && brandDetail.includes('index: 
 
 const destinationDetail = read('app/destinations/[slug]/page.tsx');
 assert(destinationDetail.includes('getHotelsForDestination') && destinationDetail.includes('index: false'), 'destination detail pages with no reviewed hotels should be noindex');
-assert(destinationDetail.includes('hotels.length >= 2 && ('), 'destination pages should not link to thin noindex best-hotel routes');
+assert(destinationDetail.includes('hasIndexableHotelShortlist(hotels) && ('), 'destination pages should not link to thin noindex best-hotel routes');
 
 const sitemap = read('app/sitemap.ts');
 assert(!sitemap.includes('const now = new Date()'), 'sitemap should not stamp every hub URL with the current request time');
 assert(sitemap.includes('brandsWithReviewedHotels') && sitemap.includes('destinationsWithReviewedHotels'), 'sitemap should exclude brand and destination pages without reviewed hotels');
+assert(sitemap.includes('hasIndexableHotelShortlist(hotels)'), 'sitemap should share the shortlist indexability predicate');
+
+const shortlistIndex = read('app/best-luxury-hotels/page.tsx');
+const shortlistDetail = read('app/best-luxury-hotels/[slug]/page.tsx');
+assert(shortlistIndex.includes('hasIndexableHotelShortlist(hotels)'), 'shortlist index should share the shortlist indexability predicate');
+assert(shortlistDetail.includes('hasIndexableHotelShortlist(hotels)'), 'shortlist metadata should share the shortlist indexability predicate');
 
 const rssRoute = read('app/rss.xml/route.ts');
 assert(rssRoute.includes('application/rss+xml'), 'RSS route should return an RSS content type');

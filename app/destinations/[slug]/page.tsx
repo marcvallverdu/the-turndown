@@ -7,6 +7,7 @@ import MarkdownContent from '@/components/MarkdownContent';
 import ReviewCard from '@/components/ReviewCard';
 import JsonLd from '@/components/JsonLd';
 import { getDestinationBySlug, getHotelsForDestination } from '@/lib/db';
+import { hasIndexableHotelShortlist } from '@/lib/seo';
 
 export const revalidate = 1;
 
@@ -104,7 +105,7 @@ export default async function DestinationPage({ params }: PageProps) {
         <p className="kicker mt-6">Search guides</p>
         <h2 className="mt-4 font-serif text-3xl">Shortlists worth opening next</h2>
         <div className="mt-6 grid gap-3 md:grid-cols-3">
-          {hotels.length >= 2 && (
+          {hasIndexableHotelShortlist(hotels) && (
             <Link href={`/best-luxury-hotels/${destination.slug}`} className="border border-charcoal/10 p-4 text-sm transition hover:border-gold/60 hover:text-gold">
               Best luxury hotels in {destination.name}
             </Link>

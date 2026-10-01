@@ -8,6 +8,7 @@ import {
   getHotelsByBrand,
   getHotelsForDestination
 } from '@/lib/db';
+import { hasIndexableHotelShortlist } from '@/lib/seo';
 
 export const revalidate = 1;
 
@@ -44,7 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const brandsWithReviewedHotels = brandRows.filter(({ hotels }) => hotels.length > 0);
   const destinationsWithReviewedHotels = destinationRows.filter(({ hotels }) => hotels.length > 0);
-  const destinationsWithLandingPages = destinationRows.filter(({ hotels }) => hotels.length >= 2);
+  const destinationsWithLandingPages = destinationRows.filter(({ hotels }) => hasIndexableHotelShortlist(hotels));
 
   const baseUrl = `https://theturndown.co`;
 

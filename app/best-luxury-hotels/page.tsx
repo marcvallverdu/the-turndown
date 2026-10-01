@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { getAllDestinations, getHotelsForDestination } from '@/lib/db';
 import JsonLd from '@/components/JsonLd';
-import { itemListJsonLd } from '@/lib/seo';
+import { hasIndexableHotelShortlist, itemListJsonLd } from '@/lib/seo';
 
 export const revalidate = 1;
 
@@ -35,7 +35,7 @@ export default async function BestLuxuryHotelsIndexPage() {
         hotels: await getHotelsForDestination(destination)
       }))
     )
-  ).filter(({ hotels }) => hotels.length >= 2);
+  ).filter(({ hotels }) => hasIndexableHotelShortlist(hotels));
 
   const itemList = itemListJsonLd(
     'Best luxury hotels by destination',
