@@ -40,9 +40,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     robots: hotels.length ? { index: true, follow: true } : { index: false, follow: true },
     openGraph: {
+      type: 'website',
+      url: `https://theturndown.co/brands/${brand.slug}`,
       title: `${brand.name} Hotels: Brand Guide & Best Properties`,
       description: brand.tagline,
       images: [{ url: brand.hero_image }]
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${brand.name} Hotels: Brand Guide & Best Properties`,
+      description: brand.tagline,
+      images: [brand.hero_image]
     }
   };
 }

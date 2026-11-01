@@ -83,6 +83,23 @@ const destinationDetail = read('app/destinations/[slug]/page.tsx');
 assert(destinationDetail.includes('getHotelsForDestination') && destinationDetail.includes('index: false'), 'destination detail pages with no reviewed hotels should be noindex');
 assert(destinationDetail.includes('hasIndexableHotelShortlist(hotels) && ('), 'destination pages should not link to thin noindex best-hotel routes');
 
+// Nested social metadata replaces rather than merges parent fields in Next.js.
+// Each entity page must own its URL and Twitter card instead of inheriting the homepage.
+for (const [source, routeClass, entity, title] of [
+  [brandDetail, 'brands', 'brand', '${brand.name} Hotels: Brand Guide & Best Properties'],
+  [destinationDetail, 'destinations', 'destination', '${destination.name} Luxury Hotel Guide']
+] as const) {
+  const metadata = source.slice(source.indexOf('export async function generateMetadata'), source.indexOf('export default async function'));
+  const openGraph = metadata.split('openGraph: {')[1]?.split('twitter: {')[0] || '';
+  const twitter = metadata.split('twitter: {')[1] || '';
+  assert(openGraph.includes('url: `https://theturndown.co/' + routeClass + '/${' + entity + '.slug}`'), `${routeClass} Open Graph URL should identify the entity route`);
+  assert(openGraph.includes("type: 'website'"), `${routeClass} should declare its Open Graph type`);
+  assert(twitter.includes("card: 'summary_large_image'"), `${routeClass} should declare a Twitter image card`);
+  assert(twitter.includes('title: `' + title + '`'), `${routeClass} Twitter title should identify the entity`);
+  assert(twitter.includes(`description: ${entity}.${entity === 'brand' ? 'tagline' : 'intro_md'}`), `${routeClass} Twitter description should use entity content`);
+  assert(twitter.includes(`images: [${entity}.hero_image]`), `${routeClass} Twitter image should use entity media`);
+}
+
 const sitemap = read('app/sitemap.ts');
 assert(!sitemap.includes('const now = new Date()'), 'sitemap should not stamp every hub URL with the current request time');
 assert(sitemap.includes('brandsWithReviewedHotels') && sitemap.includes('destinationsWithReviewedHotels'), 'sitemap should exclude brand and destination pages without reviewed hotels');

@@ -33,9 +33,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     robots: hotels.length ? { index: true, follow: true } : { index: false, follow: true },
     openGraph: {
+      type: 'website',
+      url: `https://theturndown.co/destinations/${destination.slug}`,
       title: `${destination.name} Luxury Hotel Guide`,
       description: destination.intro_md,
       images: [{ url: destination.hero_image }]
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${destination.name} Luxury Hotel Guide`,
+      description: destination.intro_md,
+      images: [destination.hero_image]
     }
   };
 }
