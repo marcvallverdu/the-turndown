@@ -6,7 +6,6 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import RatingDisplay from '@/components/RatingDisplay';
 import VerdictCard from '@/components/VerdictCard';
 import ReviewCard from '@/components/ReviewCard';
-import ReviewMethodology from '@/components/ReviewMethodology';
 import JsonLd from '@/components/JsonLd';
 import { getHotelBySlug, getHotelsByBrand, getHotelsByRegion } from '@/lib/db';
 import { absoluteUrl, compactJsonLd, imageUrl, publisher } from '@/lib/seo';
@@ -251,8 +250,6 @@ export default async function ReviewPage({ params }: PageProps) {
           </a>
         </div>
       </section>
-
-      <ReviewMethodology />
 
       {(filteredByBrand.length > 0 || filteredByRegion.length > 0) && (
         <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6">

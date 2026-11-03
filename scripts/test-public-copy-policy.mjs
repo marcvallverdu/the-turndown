@@ -41,4 +41,5 @@ if(existsSync('app/blog/[slug]/page.tsx')&&existsSync('data/blog.json')){
  const posts=JSON.parse(source('data/blog.json'));
  for(const post of posts) for(const link of post.readerLinks??[])assert.ok(/^https:\/\//.test(link.href)&&link.label.length>4);
 }
+assert.ok(!source('app/reviews/[slug]/page.tsx').includes('ReviewMethodology'),'reviews must not render publisher methodology blocks');
 console.log(JSON.stringify({passed:true,filesChecked:count,methodologyPath:policy.methodologyPath,baseline}));
