@@ -20,6 +20,7 @@ function hasEyebrow(s){
 assert.ok(hasEyebrow('<p className="text-xs uppercase tracking-[0.3em]">Decorative</p><h1>Title</h1>'));
 assert.ok(hasEyebrow('<p className="label mb-4">Decorative</p><h2>Title</h2>'));
 assert.ok(!hasEyebrow('<label className="uppercase">Email</label><input />'));
+if(existsSync('app/reviews/[slug]/page.tsx')) assert.ok(!source('app/reviews/[slug]/page.tsx').includes('<BrandBadge'), 'review hero must not render a brand eyebrow above the title');
 let count=0;
 for(const f of ['app','src/app','components','src/components'].flatMap(walk).filter(f=>f.endsWith('.tsx')&&!f.includes('/admin/')&&!f.includes('/profile/')&&!f.includes('/company/'))){
  const s=source(f);

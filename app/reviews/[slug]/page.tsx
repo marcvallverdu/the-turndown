@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import BrandBadge from '@/components/BrandBadge';
+
 import RatingDisplay from '@/components/RatingDisplay';
 import VerdictCard from '@/components/VerdictCard';
 import ReviewCard from '@/components/ReviewCard';
@@ -135,9 +135,8 @@ export default async function ReviewPage({ params }: PageProps) {
         <Image src={hotel.hero_image} alt={hotel.name} fill priority className="object-cover" sizes="100vw" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
         <div className="absolute bottom-10 left-8 flex max-w-3xl flex-col gap-4 text-white sm:left-12">
-          <BrandBadge label={hotel.brand} />
           <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl">{hotel.name}</h1>
-          <p className="text-[0.7rem] uppercase tracking-[0.35em] text-white/70">{hotel.location}</p>
+          <p className="text-sm text-white/75">{hotel.brand} · {hotel.location}</p>
         </div>
       </section>
 
