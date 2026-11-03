@@ -11,7 +11,6 @@ export default function VerdictCard({
 }) {
   return (
     <div className="border-l-2 border-gold bg-white/40 px-8 py-10">
-      <p className="text-[0.65rem] uppercase tracking-[0.35em] text-gold">The Verdict</p>
       <h3 className="mt-4 font-serif text-3xl leading-tight">{tagline}</h3>
       <div className="mt-8 grid gap-6 text-sm text-charcoal/80 md:grid-cols-3">
         <div>

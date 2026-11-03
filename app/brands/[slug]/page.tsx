@@ -102,7 +102,6 @@ export default async function BrandPage({ params }: PageProps) {
         <Image src={brand.hero_image} alt={brand.name} fill className="object-cover" sizes="100vw" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
         <div className="absolute bottom-10 left-8 text-white sm:left-12">
-          <p className="text-[0.65rem] uppercase tracking-[0.35em] text-white/70">Brand profile</p>
           <h1 className="mt-4 font-serif text-5xl">{brand.name}</h1>
           <p className="mt-4 max-w-xl text-sm text-white/80">{brand.tagline}</p>
         </div>
@@ -146,7 +145,6 @@ export default async function BrandPage({ params }: PageProps) {
 
       <section className="body-max px-6">
         <div className="section-rule" />
-        <p className="kicker mt-6">Keep comparing</p>
         <div className="mt-6 grid gap-6 md:grid-cols-2">
           <div>
             <h2 className="font-serif text-2xl">Related luxury hotel brands</h2>
@@ -174,7 +172,6 @@ export default async function BrandPage({ params }: PageProps) {
 
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6">
         <div>
-          <p className="kicker">Reviewed hotels</p>
           <h2 className="section-title mt-4 text-4xl sm:text-5xl">The Turndown on {brand.name}</h2>
         </div>
         <div className="grid gap-10 md:grid-cols-2">

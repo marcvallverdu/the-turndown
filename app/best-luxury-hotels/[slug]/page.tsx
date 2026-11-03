@@ -130,7 +130,6 @@ export default async function BestLuxuryHotelsDestinationPage({ params }: PagePr
 
       <section className="grid gap-8 border-b border-charcoal/10 pb-12 lg:grid-cols-[0.75fr_1.25fr]">
         <div>
-          <p className="kicker">Search guide</p>
           <h1 className="mt-4 font-serif text-5xl sm:text-6xl">{title}</h1>
         </div>
         <div className="space-y-5 text-base leading-[1.8] text-charcoal/75">
@@ -153,7 +152,6 @@ export default async function BestLuxuryHotelsDestinationPage({ params }: PagePr
 
       {decisionGuides.length > 0 && (
         <section className="border-t border-charcoal/10 pt-10">
-          <p className="kicker">Decision guides</p>
           <h2 className="mt-4 font-serif text-3xl">Compare the short list before you book</h2>
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             {decisionGuides.map((guide) => (

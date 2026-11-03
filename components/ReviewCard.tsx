@@ -26,7 +26,6 @@ export default function ReviewCard({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
         <div className="absolute bottom-6 left-6 right-6 text-white">
-          <p className="text-[0.65rem] uppercase tracking-[0.35em] text-white/75">{hotel.brand}</p>
           <h3
             className={cn(
               'mt-2 font-serif leading-tight',
@@ -35,6 +34,7 @@ export default function ReviewCard({
           >
             {hotel.name}
           </h3>
+          <p className="mt-2 text-sm text-white/75">{hotel.brand}</p>
           <p className="mt-3 text-[0.65rem] uppercase tracking-[0.35em] text-white/70">{hotel.location}</p>
         </div>
       </div>

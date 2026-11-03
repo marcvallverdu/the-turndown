@@ -64,7 +64,6 @@ export default async function NewOpeningPage({ params }: PageProps) {
         <Image src={article.hero_image} alt={article.title} fill className="object-cover" sizes="100vw" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
         <div className="absolute bottom-10 left-8 text-white sm:left-12">
-          <p className="text-[0.65rem] uppercase tracking-[0.35em] text-white/70">New opening</p>
           <h1 className="mt-4 font-serif text-5xl">{article.title}</h1>
           <p className="mt-4 max-w-2xl text-sm text-white/80">{article.subtitle}</p>
         </div>

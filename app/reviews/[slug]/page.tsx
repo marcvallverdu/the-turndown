@@ -258,7 +258,6 @@ export default async function ReviewPage({ params }: PageProps) {
       {(filteredByBrand.length > 0 || filteredByRegion.length > 0) && (
         <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6">
           <div>
-            <p className="kicker">More like this</p>
             <h2 className="section-title mt-4 text-4xl sm:text-5xl">More from {hotel.brand}</h2>
           </div>
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">

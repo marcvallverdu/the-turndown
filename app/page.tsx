@@ -83,7 +83,6 @@ export default async function HomePage() {
 
       <section className="mx-auto grid w-full max-w-6xl gap-10 px-6 pt-14 sm:pt-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
         <div className="max-w-3xl">
-          <p className="kicker">Luxury hotel editorial</p>
           <h1 className="mt-5 font-serif text-5xl leading-[0.95] tracking-tight text-charcoal sm:text-6xl md:text-7xl">
             An independent guide to hotels worth planning around.
           </h1>
@@ -133,8 +132,7 @@ export default async function HomePage() {
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="kicker">Latest reviews</p>
-            <h2 className="section-title mt-4 text-4xl sm:text-5xl">The newest arrivals</h2>
+            <h2 className="section-title mt-4 text-4xl sm:text-5xl">Latest hotel reviews</h2>
           </div>
           <Link href="/reviews" className="text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/60 hover:text-gold">
             View all reviews
@@ -154,7 +152,6 @@ export default async function HomePage() {
         <section className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="kicker">The Details</p>
               <h2 className="section-title mt-4 text-4xl sm:text-5xl">{latestEssay.title}</h2>
             </div>
             <Link
@@ -172,13 +169,11 @@ export default async function HomePage() {
 
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6">
         <div>
-          <p className="kicker">Browse by brand</p>
-          <h2 className="section-title mt-4 text-4xl sm:text-5xl">Houses with a point of view</h2>
+          <h2 className="section-title mt-4 text-4xl sm:text-5xl">Browse luxury hotel brands</h2>
         </div>
         <div className="flex gap-10 overflow-x-auto pb-4">
           {brands.map((brand) => (
             <Link key={brand.slug} href={`/brands/${brand.slug}`} className="min-w-[240px]">
-              <p className="text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">Brand profile</p>
               <h3 className="mt-4 font-serif text-3xl">{brand.name}</h3>
               <p className="mt-3 text-sm text-charcoal/70">{brand.tagline}</p>
             </Link>
@@ -190,8 +185,7 @@ export default async function HomePage() {
         <div className="section-rule" />
         <div className="grid gap-8 md:grid-cols-[1.1fr_0.9fr]">
           <div>
-            <p className="kicker">Newsletter</p>
-            <h2 className="section-title mt-4 text-4xl sm:text-5xl">A quieter kind of inbox</h2>
+            <h2 className="section-title mt-4 text-4xl sm:text-5xl">The Turndown newsletter</h2>
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-charcoal/70">
               Subscribe for long-form reviews, opening notes, and seasonal destinations. No flash sales, no clutter —
               just thoughtful hotel writing.

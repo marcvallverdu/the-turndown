@@ -69,7 +69,6 @@ export default async function VersusArticlePage({ params }: PageProps) {
         <Image src={article.hero_image} alt={article.title} fill className="object-cover" sizes="100vw" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
         <div className="absolute bottom-10 left-8 text-white sm:left-12">
-          <p className="text-[0.65rem] uppercase tracking-[0.35em] text-white/70">Versus</p>
           <h1 className="mt-4 font-serif text-5xl">{article.title}</h1>
           <p className="mt-4 max-w-2xl text-sm text-white/80">{article.subtitle}</p>
         </div>
@@ -82,7 +81,6 @@ export default async function VersusArticlePage({ params }: PageProps) {
       {mentionedHotels.length > 0 && (
         <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6">
           <div className="border-t border-charcoal/10 pt-10">
-            <p className="kicker">Hotels in this comparison</p>
             <h2 className="section-title mt-4 text-4xl sm:text-5xl">Read the full reviews</h2>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-charcoal/70">
               Compare the verdicts above with The Turndown's individual hotel reviews, room notes, service calls, and booking-fit caveats.
@@ -98,7 +96,6 @@ export default async function VersusArticlePage({ params }: PageProps) {
 
       <section className="body-max px-6">
         <div className="border-t border-charcoal/10 pt-10">
-          <p className="kicker">Keep reading</p>
           <h2 className="mt-4 font-serif text-3xl text-charcoal">The decision is rarely just one hotel.</h2>
           <p className="mt-4 text-sm leading-7 text-charcoal/70">
             The Turndown newsletter sends the sharper hotel calls: new reviews, destination shortlists, and the details that separate a merely expensive stay from a genuinely memorable one.

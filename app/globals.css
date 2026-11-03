@@ -66,10 +66,6 @@ a:hover {
   background: linear-gradient(90deg, rgba(184, 151, 106, 0.1), rgba(184, 151, 106, 0.6), rgba(184, 151, 106, 0.1));
 }
 
-.kicker {
-  @apply text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55;
-}
-
 .section-rule {
   @apply h-px w-full bg-mist;
 }

@@ -1,5 +1,10 @@
 # Database-first content publishing
 
+## Binding reader-facing copy policy
+
+Apart from at most one designated canonical methodology/editorial-policy page per site, public site copy must not render or serialize Sources/References lists, bibliographic research citations, source-review/extraction/process apparatus, internal production narratives or decorative eyebrows/supertitles. Keep factual sources, dated extracts, claim mappings and provenance private; research rigor and consequential factual caveats remain mandatory. Preserve functional CTAs, genuinely useful reader-action links (including official provider, booking, map, transport, manual and safety instructions), mandatory photo/review credits, legal attribution and disclosures. This overrides older public-citation advice, not research/fact-check reports delivered to the user. Review authored fields, visible bodies, metadata/schema and browser payloads; CSS hiding is not removal. The exact sole allowed route (or null) must be recorded in private receipts and regression tests; no decorative eyebrows are allowed even on that route. Existing authority, publication, rights, approval and release boundaries are unchanged. If a current schema/validator requires public citation apparatus, retain private evidence and escalate a separately scoped compatibility fix rather than bypassing validation or publishing prohibited copy.
+
+
 Routine hotel reviews, brand profiles, destination guides, and articles publish through the immutable PostgreSQL content authority. Once this release and migration are installed, a conforming content-only change does not require a Git commit, application build, or deployment. Template, route, schema, metadata-policy, and application behavior changes still use the normal reviewed code-release path.
 
 ## Authority boundary

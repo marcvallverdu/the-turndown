@@ -50,7 +50,6 @@ export default async function VersusPage() {
       <JsonLd data={jsonLd} />
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-24 pt-12">
       <section>
-        <p className="kicker">Versus</p>
         <h1 className="mt-4 font-serif text-5xl sm:text-6xl">Head-to-head on the best addresses.</h1>
       </section>
       <section className="flex flex-col gap-12">
@@ -67,7 +66,6 @@ export default async function VersusPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                 <div className="absolute bottom-4 left-4 text-white">
-                  <p className="text-[0.65rem] uppercase tracking-[0.35em] text-white/70">Versus</p>
                   <h2 className="mt-2 font-serif text-3xl">{article.title}</h2>
                 </div>
               </div>

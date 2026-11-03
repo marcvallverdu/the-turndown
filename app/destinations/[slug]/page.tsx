@@ -98,7 +98,6 @@ export default async function DestinationPage({ params }: PageProps) {
         <Image src={destination.hero_image} alt={destination.name} fill className="object-cover" sizes="100vw" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
         <div className="absolute bottom-10 left-8 text-white sm:left-12">
-          <p className="text-[0.65rem] uppercase tracking-[0.35em] text-white/70">Destination guide</p>
           <h1 className="mt-4 font-serif text-5xl">{destination.name}</h1>
           <p className="mt-4 text-sm text-white/80">{destination.best_time}</p>
         </div>
@@ -110,7 +109,6 @@ export default async function DestinationPage({ params }: PageProps) {
 
       <section className="body-max px-6">
         <div className="section-rule" />
-        <p className="kicker mt-6">Search guides</p>
         <h2 className="mt-4 font-serif text-3xl">Shortlists worth opening next</h2>
         <div className="mt-6 grid gap-3 md:grid-cols-3">
           {hasIndexableHotelShortlist(hotels) && (
@@ -129,7 +127,6 @@ export default async function DestinationPage({ params }: PageProps) {
 
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6">
         <div>
-          <p className="kicker">Reviewed hotels</p>
           <h2 className="section-title mt-4 text-4xl sm:text-5xl">Stay in {destination.name}</h2>
         </div>
         <div className="grid gap-10 md:grid-cols-2">

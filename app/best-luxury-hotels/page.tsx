@@ -47,7 +47,6 @@ export default async function BestLuxuryHotelsIndexPage() {
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-24 pt-12">
       <JsonLd data={{ '@context': 'https://schema.org', ...itemList }} />
       <section>
-        <p className="kicker">Search guides</p>
         <h1 className="mt-4 font-serif text-5xl sm:text-6xl">Best luxury hotels, by destination.</h1>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-charcoal/70">
           Clean, indexable destination shortlists for readers searching where to stay next.
@@ -61,7 +60,6 @@ export default async function BestLuxuryHotelsIndexPage() {
             href={`/best-luxury-hotels/${destination.slug}`}
             className="group border border-charcoal/10 bg-ivory/70 p-6 transition hover:border-gold/60"
           >
-            <p className="text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/45">Best hotels in</p>
             <h2 className="mt-3 font-serif text-3xl group-hover:text-gold">{destination.name}</h2>
             <p className="mt-4 text-sm leading-7 text-charcoal/65">
               {hotels.length} reviewed stays, plus when to go and how to choose between them.
