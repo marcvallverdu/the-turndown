@@ -135,7 +135,7 @@ export default async function ReviewPage({ params }: PageProps) {
 
       <section className={hotel.hero_image ? "relative h-[80vh] min-h-[520px] w-full" : "body-max py-12"}>
         {hotel.hero_image && <>
-          <Image src={hotel.hero_image} alt={heroPhoto?.alt || hotel.name} fill priority className="object-cover" sizes="100vw" />
+          <Image src={hotel.hero_image} alt={heroPhoto?.alt || hotel.name} fill priority className={heroPhoto ? 'object-cover object-[30%_center] sm:object-center' : 'object-cover'} sizes="100vw" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
         </>}
         <div className={hotel.hero_image ? "absolute bottom-10 left-8 flex max-w-3xl flex-col gap-4 text-white sm:left-12" : "flex max-w-3xl flex-col gap-4 text-charcoal"}>
