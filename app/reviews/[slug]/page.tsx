@@ -45,13 +45,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: `https://theturndown.co/reviews/${hotel.slug}`,
       title: `${hotel.name} Review`,
       description: hotel.tagline,
-      images: [{ url: hotel.hero_image }]
+      images: hotel.hero_image ? [{ url: hotel.hero_image }] : []
     },
     twitter: {
-      card: 'summary_large_image',
+      card: hotel.hero_image ? 'summary_large_image' : 'summary',
       title: `${hotel.name} Review`,
       description: hotel.tagline,
-      images: [hotel.hero_image]
+      images: hotel.hero_image ? [hotel.hero_image] : []
     }
   };
 }
