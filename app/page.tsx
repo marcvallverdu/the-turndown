@@ -113,7 +113,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {featured && (
+      {featured && featured.hero_image && (
         <section>
           <HeroImage
             src={featured.hero_image}

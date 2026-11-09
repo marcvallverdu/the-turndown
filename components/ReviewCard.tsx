@@ -16,14 +16,14 @@ export default function ReviewCard({
       href={`/reviews/${hotel.slug}`}
       className={cn('group block', className)}
     >
-      <div className={cn('relative overflow-hidden', variant === 'compact' ? 'h-[260px]' : 'h-[360px]', variant === 'feature' && 'h-[520px] md:h-[620px]')}>
-        <Image
+      <div className={cn('relative overflow-hidden', !hotel.hero_image && 'bg-charcoal', variant === 'compact' ? 'h-[260px]' : 'h-[360px]', variant === 'feature' && 'h-[520px] md:h-[620px]')}>
+        {hotel.hero_image && <Image
           src={hotel.hero_image}
           alt={hotel.name}
           fill
           className="object-cover transition duration-700 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, 50vw"
-        />
+        />}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
         <div className="absolute bottom-6 left-6 right-6 text-white">
           <h3
