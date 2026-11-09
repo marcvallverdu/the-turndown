@@ -147,12 +147,16 @@ export default async function ReviewPage({ params }: PageProps) {
           <span>{formatPriceRange(hotel.price_range)}</span>
           <span>{bestFor.join(', ')}</span>
         </div>
-        <div className="mt-6 flex items-baseline gap-6">
+        {hotel.rating_overall != null && <div className="mt-6 flex items-baseline gap-6">
           <RatingDisplay value={hotel.rating_overall} />
           <div className="text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/55">
-            Room {hotel.rating_room} · Service {hotel.rating_service} · Food {hotel.rating_food}
+            {[
+              hotel.rating_room != null ? `Room ${hotel.rating_room}` : null,
+              hotel.rating_service != null ? `Service ${hotel.rating_service}` : null,
+              hotel.rating_food != null ? `Food ${hotel.rating_food}` : null
+            ].filter(Boolean).join(' · ')}
           </div>
-        </div>
+        </div>}
       </section>
 
       <section className="body-max">
