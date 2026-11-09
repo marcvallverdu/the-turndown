@@ -1,0 +1,14 @@
+{
+  "project": "The Turndown",
+  "url": "https://theturndown.co/reviews/atlantis-the-royal",
+  "contentVersion": "0dec6500-2689-53bb-aafd-41f9f7153b4b",
+  "checksum": "sha256:0dec65002689e3bb6afd41f9f7153b4bdad626f898458783604de282fee76b90",
+  "publisherExit": 0,
+  "removed": [
+    "unsupported experiential claims and ratings",
+    "invented Little Venice/Jos\u00e9 Andr\u00e9s venue",
+    "standard-room private-pool implication",
+    "unverified hotel stock photos"
+  ],
+  "publication": "restricted immutable DB publisher; optional-hero template fix requires app deployment"
+}

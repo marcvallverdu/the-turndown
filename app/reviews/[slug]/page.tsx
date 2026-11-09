@@ -130,12 +130,14 @@ export default async function ReviewPage({ params }: PageProps) {
         />
       </div>
 
-      <section className="relative h-[80vh] min-h-[520px] w-full">
-        <Image src={hotel.hero_image} alt={hotel.name} fill priority className="object-cover" sizes="100vw" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-        <div className="absolute bottom-10 left-8 flex max-w-3xl flex-col gap-4 text-white sm:left-12">
+      <section className={hotel.hero_image ? "relative h-[80vh] min-h-[520px] w-full" : "body-max py-12"}>
+        {hotel.hero_image && <>
+          <Image src={hotel.hero_image} alt={hotel.name} fill priority className="object-cover" sizes="100vw" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+        </>}
+        <div className={hotel.hero_image ? "absolute bottom-10 left-8 flex max-w-3xl flex-col gap-4 text-white sm:left-12" : "flex max-w-3xl flex-col gap-4 text-charcoal"}>
           <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl">{hotel.name}</h1>
-          <p className="text-sm text-white/75">{hotel.brand} · {hotel.location}</p>
+          <p className={hotel.hero_image ? "text-sm text-white/75" : "text-sm text-charcoal/75"}>{hotel.brand} · {hotel.location}</p>
         </div>
       </section>
 
