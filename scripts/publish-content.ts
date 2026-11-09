@@ -52,7 +52,7 @@ export type PublisherCommand =
 
 const PRODUCTION_ORIGIN = 'https://theturndown.co';
 const USER_AGENT = 'The-Turndown-Content-Publisher/1.0';
-const ALLOWED_IMAGE_HOSTS = new Set(['images.unsplash.com', 'cdn.sanity.io', 'res.cloudinary.com']);
+const ALLOWED_IMAGE_HOSTS = new Set(['images.unsplash.com', 'cdn.sanity.io', 'res.cloudinary.com', 'theturndown.co']);
 const MAX_MEDIA_BYTES = 20_000_000;
 
 function usage(): never {

@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "contentType": "hotel",
+  "slug": "atlantis-the-royal",
+  "payload": {
+    "name": "Atlantis The Royal",
+    "brand": "Atlantis",
+    "style": "Ultra-Modern Maximalist",
+    "images": [],
+    "region": "Middle East",
+    "bestFor": [
+      "Dining",
+      "Resort pools",
+      "Palm Jumeirah"
+    ],
+    "country": "United Arab Emirates",
+    "priceTo": null,
+    "tagline": "A Palm Jumeirah resort where the room category and pool-access rules matter more than the skyline photograph.",
+    "website": "https://www.atlantis.com/dubai/atlantis-the-royal",
+    "currency": "USD",
+    "featured": true,
+    "latitude": 25.1304,
+    "location": "Dubai, UAE",
+    "brandSlug": "atlantis",
+    "createdAt": "2026-03-05T12:14:12.040Z",
+    "heroImage": "https://theturndown.co/images/hotels/atlantis-the-royal-43bdef275b08.webp",
+    "longitude": 55.1171,
+    "priceFrom": null,
+    "updatedAt": "2026-11-09T11:11:11.943331Z",
+    "bookingUrl": "https://booking.atlantis.com/?chain=9020&config=ATR&hotel=9063&level=hotel&theme=ATR",
+    "priceRange": "$$$$",
+    "ratingFood": null,
+    "ratingRoom": null,
+    "regionSlug": "middle-east",
+    "reviewFood": "The restaurant collection includes Dinner by Heston Blumenthal, Greek restaurant Estiatorio Milos, La Mar by Gastón Acurio and Ariana's Persian Kitchen. Ling Ling is a Pan-Asian dining and nightlife venue. These are different dining choices, not evidence that every restaurant is included in a room rate.\n\nCheck the current menu, opening days, dress code, child policy and cancellation or deposit terms for each reservation. Breakfast arrangements and other dining inclusions depend on the rate booked. If a particular restaurant is central to the trip, secure that booking separately rather than relying on the hotel reservation to provide a table.",
+    "reviewRoom": "A private pool is not a standard-room amenity. The Sky Pool Villa is a specifically named category with a private infinity pool and terrace overlooking the sea or the Palm. The suite collection also includes Sky Terrace Suites and Junior Sky View Suites; do not infer a private pool from the word 'suite', a terrace or a photograph.\n\nChoose the exact category first, then verify its layout, bedding and permitted occupancy for your party. If a private pool is essential, have the hotel confirm that it belongs exclusively to your booked accommodation rather than being a shared resort pool or a separately reserved cabana. Ask about pool dimensions, heating, privacy and child-safety arrangements before paying; those details are not established here.\n\nCompare the full rate conditions, including breakfast, lounge access, transfers, cancellation terms, taxes and any minimum stay. This review does not quote a current nightly rate or confirm availability for particular dates.",
+    "countrySlug": "united-arab-emirates",
+    "ratingValue": null,
+    "reviewIntro": "Atlantis The Royal is a resort on Dubai's Palm Jumeirah with a choice of rooms, suites, signature penthouses, restaurants and pool venues. The useful booking distinction is not simply sea view versus Palm view: it is whether you need a standard room, more living space or a category that explicitly includes its own pool.\n\nThe resort suits a trip organised around dining and time by the water. Treat the dramatic pool photographs as a reason to inspect the room description and venue rules, not as a promise that every stay includes a private infinity pool.",
+    "ratingOverall": null,
+    "ratingService": null,
+    "reviewArrival": "Plan your arrival around Palm Jumeirah rather than assuming a central-city base. Arrange the airport transfer and check-in details with the hotel, particularly if arriving early or travelling with children. Ask what you can use before the room is ready.\n\nSome suite benefits include airport transfers, but inclusions depend on the booked category and offer. Confirm the airport, passenger capacity, luggage allowance and child-seat arrangements in writing. Neither a transfer inclusion nor a room reservation establishes how quickly check-in will happen.",
+    "reviewDetails": "Keep three pool decisions separate: your accommodation's private pool, the resort pool and beach, and the pool clubs. The Royal Pool and Royal Beach are listed as resort facilities for Atlantis The Royal guests. Cloud 22 and Nobu by the Beach have their own access arrangements and are adults only, for guests aged 21 and above.\n\nCloud 22 requires advance reservations. Check its current operating status directly before organising the trip around it; an advertised venue or a room booking does not establish that it will be open, included or available on your dates. Nobu by the Beach also recommends advance reservations. Confirm any charge, minimum spend, sunbed or cabana allocation for the experience you want.\n\nFamilies should plan around the facilities their children can actually use, not the adult-only pool photographs. For spa treatments, fitness access or any other activity important to the stay, ask about availability and charges at the time of booking.",
+    "reviewService": "The suite benefits advertised by the hotel include a 24-hour e-butler service. That describes an offered service, not a guarantee of response times or a basis for scoring staff performance. Confirm which benefits attach to your own booking rather than assuming all guests receive the suite package.\n\nFor a complicated stay, send the hotel a single list of practical requirements: connecting rooms, accessibility needs, transfers, restaurant bookings and pool reservations. Request explicit confirmation of the important arrangements. There is no firsthand assessment of check-in speed, staff warmth or service consistency in this review.",
+    "reviewVerdict": "Choose Atlantis The Royal if the Palm Jumeirah setting, restaurant choice and pool-focused resort stay match the trip you want. Choose the Sky Pool Villa or another explicitly confirmed pool category only if a private pool is worth the additional cost to you; a standard room should not be bought on that assumption.\n\nThe main cautions are category-specific inclusions, separate venue reservations and adult-only pool restrictions. Confirm those details against your exact dates and travelling party before paying. This is booking guidance, not a report of a firsthand stay or a guarantee of service quality.",
+    "verdictSkipIf": "You need central-city convenience, a guaranteed private pool at standard-room prices, or access for children to the 21+ pool clubs.",
+    "ratingLocation": null,
+    "verdictBestFor": "Travellers planning a Palm Jumeirah resort stay around named restaurants and clearly specified pool access.",
+    "verdictStandout": "The Sky Pool Villa has its own private infinity pool; Cloud 22 is a separate adults-only pool-club experience."
+  },
+  "evidence": {
+    "sources": [
+      {
+        "id": "suites",
+        "url": "https://www.atlantis.com/dubai/atlantis-the-royal/stay/rooms-and-suites/suites",
+        "checkedAt": "2026-11-09T10:42:23.462Z"
+      },
+      {
+        "id": "pools",
+        "url": "https://www.atlantis.com/dubai/atlantis-the-royal/experiences/pool-and-beach",
+        "checkedAt": "2026-11-09T10:42:23.462Z"
+      },
+      {
+        "id": "dining",
+        "url": "https://www.atlantis.com/dubai/atlantis-the-royal/dining",
+        "checkedAt": "2026-11-09T10:42:23.462Z"
+      }
+    ],
+    "claims": [
+      {
+        "claim": "Sky Pool Villa explicitly has a private infinity pool; Sky Terrace and Junior Sky View are separate named categories. Suite privileges include airport transfers and 24-hour e-butler, not universal standard-room benefits.",
+        "sourceIds": [
+          "suites"
+        ]
+      },
+      {
+        "claim": "Royal Pool/Beach are resort facilities; Cloud 22 requires advance reservation and both Cloud 22 and Nobu by the Beach pool clubs are 21+. Operating status and charges must be confirmed, not promised.",
+        "sourceIds": [
+          "pools"
+        ]
+      },
+      {
+        "claim": "Current dining collection includes Dinner by Heston, Milos, La Mar by Gastón Acurio, Ariana’s Persian Kitchen and Ling Ling. Removed invented Little Venice/José Andrés and unsupported firsthand food/service assessments.",
+        "sourceIds": [
+          "dining"
+        ]
+      }
+    ],
+    "hardGates": {
+      "truth": true,
+      "userValue": true,
+      "informationGain": true,
+      "internalLinks": true,
+      "editorialSameness": true
+    },
+    "revisionCount": 0
+  },
+  "media": [
+    {
+      "url": "https://theturndown.co/images/hotels/atlantis-the-royal-43bdef275b08.webp",
+      "checksum": "sha256:3de2c0616e8a10692bdb3b0e3dbf1fe2a303d423279e7265c103292b732e8791",
+      "contentType": "image/webp",
+      "width": 1920,
+      "height": 1280,
+      "byteLength": 205666,
+      "retrievedAt": "2026-11-09T11:11:11.943331Z",
+      "provenance": "https://www.atlantis.com/dubai/atlantis-the-royal | https://dam.kerzner.com/i/kerzner/ATR-Resort-Building-Exterior?w=1920&fmt=jpg | Atlantis The Royal / Kerzner | Unverified; no licence claimed. Marc explicitly instructed use of real property photography on 9 November 2026."
+    }
+  ],
+  "actor": "property-photography-correction",
+  "runId": "property-photos-20261109"
+}

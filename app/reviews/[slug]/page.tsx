@@ -10,6 +10,7 @@ import JsonLd from '@/components/JsonLd';
 import { getHotelBySlug, getHotelsByBrand, getHotelsByRegion } from '@/lib/db';
 import { absoluteUrl, compactJsonLd, imageUrl, publisher } from '@/lib/seo';
 import { formatPriceRange, jsonParse } from '@/lib/utils';
+import propertyPhotoSources from '@/data/property-photo-sources.json';
 
 function Paragraphs({ text }: { text?: string | null }) {
   if (!text) return null;
@@ -69,6 +70,8 @@ export default async function ReviewPage({ params }: PageProps) {
   const filteredByBrand = relatedByBrand.filter((item) => item.slug !== hotel.slug).slice(0, 2);
   const filteredByRegion = relatedByRegion.filter((item) => item.slug !== hotel.slug);
   const gallery = jsonParse<string[]>(hotel.images, []);
+  const photo = (propertyPhotoSources as Record<string, { path: string; sourcePageUrl: string; credit: string; alt: string }>)[hotel.slug];
+  const heroPhoto = photo && hotel.hero_image === `https://theturndown.co${photo.path}` ? photo : undefined;
   const getPullQuote = (text: string) => {
     const sentence = text.split(`. `).find((line) => line.trim().length > 0);
     if (!sentence) return ``;
@@ -132,7 +135,7 @@ export default async function ReviewPage({ params }: PageProps) {
 
       <section className={hotel.hero_image ? "relative h-[80vh] min-h-[520px] w-full" : "body-max py-12"}>
         {hotel.hero_image && <>
-          <Image src={hotel.hero_image} alt={hotel.name} fill priority className="object-cover" sizes="100vw" />
+          <Image src={hotel.hero_image} alt={heroPhoto?.alt || hotel.name} fill priority className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
         </>}
         <div className={hotel.hero_image ? "absolute bottom-10 left-8 flex max-w-3xl flex-col gap-4 text-white sm:left-12" : "flex max-w-3xl flex-col gap-4 text-charcoal"}>
@@ -140,6 +143,8 @@ export default async function ReviewPage({ params }: PageProps) {
           <p className={hotel.hero_image ? "text-sm text-white/75" : "text-sm text-charcoal/75"}>{hotel.brand} · {hotel.location}</p>
         </div>
       </section>
+
+      {heroPhoto && <p className="body-max text-xs text-charcoal/65">Photo: <a className="underline" href={heroPhoto.sourcePageUrl}>{heroPhoto.credit}</a></p>}
 
       <section className="body-max">
         <div className="flex flex-wrap items-center gap-6 text-[0.65rem] uppercase tracking-[0.35em] text-charcoal/60">
