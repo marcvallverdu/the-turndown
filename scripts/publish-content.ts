@@ -137,13 +137,16 @@ export function isPublicAddress(address: string): boolean {
   return !privateAddresses.check(address, family === 4 ? 'ipv4' : 'ipv6');
 }
 
-function imageDimensions(bytes: Buffer, contentType: ContentMedia['contentType']): { width: number; height: number } {
+export function imageDimensions(bytes: Buffer, contentType: ContentMedia['contentType']): { width: number; height: number } {
   if (contentType === 'image/png' && bytes.length >= 24 && bytes.subarray(1, 4).toString() === 'PNG') {
     return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) };
   }
   if (contentType === 'image/webp' && bytes.length >= 30 && bytes.subarray(0, 4).toString() === 'RIFF' && bytes.subarray(8, 12).toString() === 'WEBP') {
     const kind = bytes.subarray(12, 16).toString();
     if (kind === 'VP8X') return { width: 1 + bytes.readUIntLE(24, 3), height: 1 + bytes.readUIntLE(27, 3) };
+    if (kind === 'VP8 ' && bytes.subarray(23, 26).equals(Buffer.from([0x9d, 0x01, 0x2a]))) {
+      return { width: bytes.readUInt16LE(26) & 0x3fff, height: bytes.readUInt16LE(28) & 0x3fff };
+    }
     if (kind === 'VP8L') { const bits = bytes.readUInt32LE(21); return { width: (bits & 0x3fff) + 1, height: ((bits >>> 14) & 0x3fff) + 1 }; }
   }
   if (contentType === 'image/jpeg' && bytes[0] === 0xff && bytes[1] === 0xd8) {

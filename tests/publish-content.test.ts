@@ -1,5 +1,10 @@
 import assert from 'node:assert/strict';
-import { blocksIndexing, parsePublisherArgs, runPublisher, verifyHistoricalMedia } from '../scripts/publish-content';
+import { readFileSync } from 'node:fs';
+import { blocksIndexing, imageDimensions, parsePublisherArgs, runPublisher, verifyHistoricalMedia } from '../scripts/publish-content';
+
+const officialExterior = readFileSync('public/images/hotels/atlantis-the-royal-43bdef275b08.webp');
+assert.deepEqual(imageDimensions(officialExterior, 'image/webp'), { width: 1920, height: 1280 });
+assert.throws(() => imageDimensions(officialExterior.subarray(0, 29), 'image/webp'), /cannot parse/);
 
 const base = ['publish', 'candidate.json', '--base-url', 'https://theturndown.co'];
 assert.deepEqual(parsePublisherArgs(base), {
