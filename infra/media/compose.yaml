@@ -1,0 +1,40 @@
+name: turndown-media
+services:
+  media:
+    image: ghcr.io/marcvallverdu/nginx-security-workloads@sha256:4869c92c2fd7869d499df6e476f7a3d1e2b860a0aa34fb575218b540060acd75
+    pull_policy: never
+    container_name: turndown-media
+    entrypoint: [nginx]
+    command: [-e, /dev/stderr, -c, /etc/nginx/turndown.conf, -g, 'daemon off;']
+    healthcheck:
+      test: [CMD, curl, --fail, --silent, --show-error, 'http://127.0.0.1:8080/healthcheck']
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    user: '1000:1000'
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    mem_limit: 64m
+    cpus: 0.25
+    pids_limit: 32
+    tmpfs: ['/tmp:size=16m,mode=1777']
+    volumes:
+      - /data/turndown-media/public:/srv:ro
+      - /data/turndown-media/nginx.conf:/etc/nginx/turndown.conf:ro
+    networks: [coolify]
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: coolify
+      traefik.http.routers.turndown-media-https.rule: '(Host(`theturndown.co`) || Host(`www.theturndown.co`)) && PathPrefix(`/media/`)'
+      traefik.http.routers.turndown-media-https.priority: '100'
+      traefik.http.routers.turndown-media-https.entrypoints: https
+      traefik.http.routers.turndown-media-https.tls: 'true'
+      traefik.http.routers.turndown-media-https.tls.certresolver: letsencrypt
+      traefik.http.routers.turndown-media-https.service: turndown-media
+      traefik.http.services.turndown-media.loadbalancer.server.port: '8080'
+networks:
+  coolify:
+    external: true
