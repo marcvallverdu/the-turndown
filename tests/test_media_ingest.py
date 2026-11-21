@@ -41,6 +41,32 @@ class MediaTests(unittest.TestCase):
         self.assertEqual(first, self.ingest(replay))
         self.assertEqual(self.data, (self.root / 'storage/public/media' / (self.sha + '.png')).read_bytes())
 
+    def test_publisher_timestamp_milliseconds_and_utc(self):
+        for timestamp in ['2026-01-01T00:00:00.616Z', '2026-01-01T02:00:00.616000+02:00']:
+            with self.subTest(timestamp=timestamp):
+                _, manifest = client.inspect_image(self.file, self.sha, 'https://example.org/source', timestamp)
+                self.assertEqual(manifest['retrievedAt'], '2026-01-01T00:00:00.616Z')
+        self.assertEqual(self.manifest['retrievedAt'], '2026-01-01T00:00:00.000Z')
+
+    def test_emitted_legacy_receipt_timestamp(self):
+        from unittest.mock import patch
+        import contextlib
+        import subprocess
+        import sys
+        for timestamp in ['2026-01-01T00:00:00.616000Z', '2026-01-01T02:00:00.616000+02:00']:
+            stored = dict(self.manifest, retrievedAt=timestamp)
+            def run(command, **kwargs):
+                if command[0] == 'ssh':
+                    return subprocess.CompletedProcess(command, 0, json.dumps(stored).encode(), b'')
+                Path(command[command.index('-D') + 1]).write_text('content-type: image/png\ncache-control: immutable, no-transform\n')
+                Path(command[command.index('-o') + 1]).write_bytes(self.data)
+                return subprocess.CompletedProcess(command, 0)
+            output = io.StringIO()
+            with self.subTest(timestamp=timestamp), patch.object(sys, 'argv', ['ingest', str(self.file), '--sha256', self.sha, '--source-url', self.manifest['provenance'], '--retrieved-at', '2026-01-01T00:00:00.616Z']), patch.object(client.subprocess, 'run', side_effect=run), contextlib.redirect_stdout(output):
+                client.main()
+            self.assertEqual(json.loads(output.getvalue())['retrievedAt'], '2026-01-01T00:00:00.616Z')
+            self.assertEqual(stored['retrievedAt'], timestamp)
+
     def test_source_hash_mismatch(self):
         with self.assertRaises(ValueError):
             client.inspect_image(self.file, '0' * 64, 'https://example.org/source', '2026-01-01T00:00:00Z')

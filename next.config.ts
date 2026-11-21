@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'cdn.sanity.io' },
       { protocol: 'https', hostname: 'res.cloudinary.com' },
-      { protocol: 'https', hostname: 'theturndown.co', pathname: '/images/hotels/**' }
+      { protocol: 'https', hostname: 'theturndown.co', pathname: '/images/hotels/**' },
+      { protocol: 'https', hostname: 'theturndown.co', port: '', pathname: '/media/**', search: '' }
     ]
   },
   async redirects() {

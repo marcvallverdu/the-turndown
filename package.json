@@ -9,6 +9,7 @@
     "seed": "tsx scripts/seed.ts",
     "test:seo": "tsx scripts/seo-regression-check.ts",
     "lint": "next lint",
+    "test:image-config": "tsx tests/image-config.test.ts",
     "test:homepage": "tsx tests/homepage.test.ts",
     "test:newsletter": "tsx tests/newsletter.test.ts",
     "test:seed-safety": "tsx tests/seed-safety.test.ts",

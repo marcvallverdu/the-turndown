@@ -49,7 +49,7 @@ def inspect_image(path, expected_hash, source_url, retrieved_at):
     return data, {'url': f'https://theturndown.co/media/{expected_hash}.{extension}',
                   'checksum': f'sha256:{expected_hash}', 'provenance': source_url,
                   'contentType': content_type, 'width': width, 'height': height,
-                  'byteLength': len(data), 'retrievedAt': timestamp.isoformat().replace('+00:00', 'Z')}
+                  'byteLength': len(data), 'retrievedAt': timestamp.astimezone(datetime.timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')}
 
 
 def main():
@@ -70,6 +70,9 @@ def main():
     for key in ('url', 'checksum', 'contentType', 'width', 'height', 'byteLength'):
         if stored[key] != manifest[key]:
             raise ValueError('remote manifest mismatch: ' + key)
+    # Older first-acquisition receipts may retain six digits or an offset.
+    # Normalize only emitted metadata, never rewrite the retained receipt.
+    stored['retrievedAt'] = datetime.datetime.fromisoformat(stored['retrievedAt'].replace('Z', '+00:00')).astimezone(datetime.timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
     # Curl uses normal TLS validation, no redirect, no compression and bounded download.
     scratch = Path.home() / '.hermes/cache/scratch'
     scratch.mkdir(parents=True, exist_ok=True)
